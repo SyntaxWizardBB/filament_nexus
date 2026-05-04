@@ -28,3 +28,44 @@ Der FloatingActionButton führt zu einem neuen Bildschirm, auf dem ein neues Fil
 #### Footer
 
 Der Footer enthält die Navigation zwischen der Übersichtsseite (Startseite) und der Seite für die eigenen Filamente. Er ist ein Stateful Widget, da sich die Auswahl der Seite ändern kann.
+
+# Erste Struktur der "Home" Seite
+
+Die Home-Seite ist die Seite "Alle Filamente" und hat folgende Aufbau:
+
+```
+Alle Filamente - Stateful Widget
+└───Scaffold
+        └───AppBar
+        |       └─── Titel
+        |       └─── Avatar
+        └─── Body
+        |       └─── Padding
+        |               └─── FilamentCardsList - Stateful Widget
+        |                       └─── Column
+        |                               └─── FilamentCard - Stateful Widget
+        |                                       └─── Container
+        |                                               Row
+        |                                               └─── Column
+        |                                               |        └─── Icon (Filament)
+        |                                               └─── Column
+        |                                                       └─── Text (Typ)
+        |                                                       └─── Text (Material)
+        |                                                       └─── Row
+        |                                                       |        └─── Icon (NozzleTemp)
+        |                                                       |        └─── Text (NozzleTemp)
+        |                                                       |        └─── Icon (BedTemp)
+        |                                                       |        └─── Text (BedTemp)
+        |                                                       └─── Row
+        |                                                       |        └─── Icon (PrintSpeed)
+        |                                                       |        └─── Text (PrintSpeed)
+        |                                                       |        └─── Icon (FanSpeed)
+        |                                                       |        └─── Text (FanSpeed)
+        |                                                       └─── Icon (Pfeil)
+        |
+        └─── BottomNavigationBar
+        |       └─── NavigationDestination (Alle Filamente)
+        |       └─── NavigationDestination (Meine Filamente)
+        └─── FloatingActionButton
+                └───Icon (add)
+```
