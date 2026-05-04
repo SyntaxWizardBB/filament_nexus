@@ -1,6 +1,6 @@
-# Fillament Nexus
+# Filament Nexus
 
-Fillament Nexus Flutter app.
+Filament Nexus Flutter app.
 
 ## Getting Started
 
