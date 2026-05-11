@@ -69,3 +69,34 @@ Alle Filamente - Stateful Widget
         └─── FloatingActionButton
                 └───Icon (add)
 ```
+
+# App-Struktur
+Grundsätzlich verwenden wir für diese App die Feature-Struktur. Folgende Struktur inkl. Files ist geplant:
+
+```
+lib
+├───app
+│   ├───theme
+│   app.dart
+├───features
+│   ├───filaments
+|   |   ├───data
+|   |   |   └───filament_repository.dart
+|   |   ├───domain
+|   |   |   └───filament.dart
+|   |   └───presentation
+|   |         ├───all_filaments_screen.dart
+|   |         ├───my_filaments_screen.dart
+|   |         ├───filament_details_screen.dart
+|   |         ├───add_edit_filament_screen.dart
+|   |         └───widgets
+|   |              └───filament_list.dart
+│   ├───profile
+|   |   ├───data
+|   |   ├───domain
+|   |   └───presentation
+|   |         └───profile_screen.dart
+├───shared
+|   └───widgets
+├───main.dart
+```
