@@ -1,5 +1,7 @@
-
 import 'package:filament_nexus/app/theme/app_colors.dart';
+import 'package:filament_nexus/features/filaments/data/mock.dart';
+import 'package:filament_nexus/features/filaments/presentation/widgets/filament_card.dart';
+import 'package:filament_nexus/features/filaments/presentation/widgets/filament_list.dart';
 import 'package:filament_nexus/shared/widgets/filament_icon.dart';
 import 'package:flutter/material.dart';
 
@@ -20,6 +22,7 @@ class AllFilaments extends StatefulWidget {
 
 class _AllFilamentsState extends State<AllFilaments> {
   static const _titles = ['Alle Filamente', 'Meine Filamente'];
+  final _filaments = mockFilaments;
   int _selectedIndex = 0;
   final User _user = User(name: 'Andreas');
   void _onItemTapped(int index) {
@@ -30,15 +33,18 @@ class _AllFilamentsState extends State<AllFilaments> {
   Widget build(BuildContext context) {
     final pages = <Widget>[
       const Center(child: Text('Alle Filamente')),
-      const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('Meine Filamente'),
-            Text('Hier könnten deine Filamente angezeigt werden'),
-          ],
-        ),
+      ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      //   children: mockFilaments
+      //       .map((filament) => FilamentCard(filament: filament))
+      //       .toList(),
+      // ),
+        children: _filaments.map((filament) {
+          return Container(
+            margin: const EdgeInsets.only(bottom: 12),
+            child: FilamentCard(filament: filament),
+          );
+        }).toList(),
       ),
     ];
 
