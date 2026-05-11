@@ -1,8 +1,9 @@
 
+import 'package:filament_nexus/app/theme/app_colors.dart';
 import 'package:filament_nexus/shared/widgets/filament_icon.dart';
 import 'package:flutter/material.dart';
 
-import '../../../app/theme/app_colors.dart';class User {
+class User {
   final String name;
   User({required this.name});
   String get initial => name.isNotEmpty ? name[0].toUpperCase() : '?';
