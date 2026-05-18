@@ -9,6 +9,7 @@ class AppColors {
   static const bg500   = Color(0xFFD9D9D9);
   static const bg600  = Color(0xFFB5B5B5);
   static const textDark = Color(0xFF333333);
+  static const textLight = Color(0xFF6B6B6B);
   static const filamentNeutral = Color(0xFF949494);
   static const filamentGood = Color(0xFF3C713C);
   static const filamentMedium = Color(0xFFAC9F42);

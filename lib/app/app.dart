@@ -1,9 +1,15 @@
 import 'package:filament_nexus/app/theme/app_colors.dart';
+import 'package:filament_nexus/features/filaments/presentation/all_filaments_screen.dart';
 import 'package:filament_nexus/features/filaments/presentation/my_filaments_screen.dart';
 import 'package:filament_nexus/shared/widgets/filament_icon.dart';
 import 'package:flutter/material.dart';
 import 'theme/app_theme.dart';
-import '../features/filaments/presentation/all_filaments_screen.dart';
+
+class User {
+  final String name;
+  User({required this.name});
+  String get initial => name.isNotEmpty ? name[0].toUpperCase() : '?';
+}
 
 class FilamentNexus extends StatelessWidget {
   const FilamentNexus({super.key});
@@ -19,12 +25,6 @@ class FilamentNexus extends StatelessWidget {
   }
 }
 
-class User {
-  final String name;
-  User({required this.name});
-  String get initial => name.isNotEmpty ? name[0].toUpperCase() : '?';
-}
-
 class HomeShell extends StatefulWidget {
   const HomeShell({super.key});
 
@@ -36,7 +36,7 @@ class _HomeShellState extends State<HomeShell> {
   final User _user = User(name: 'Andreas');
   static const _titles = ['Alle Filamente', 'Meine Filamente'];
 
-  final screens = [AllFilaments(), MyFilaments()];
+  final screens = [AllFilamentsScreen(), MyFilamentsScreen()];
 
   final destinations = <NavigationDestination>[
     NavigationDestination(
@@ -73,12 +73,11 @@ class _HomeShellState extends State<HomeShell> {
               child: InkWell(
                 customBorder: const CircleBorder(),
                 onTap: () {
-                  // z. B. Profil-Screen öffnen
+                  // TODO: open profile screen
                 },
                 child: CircleAvatar(
                   radius: 18,
                   backgroundColor: AppColors.primary,
-
                   child: Text(
                     _user.initial,
                     style: const TextStyle(

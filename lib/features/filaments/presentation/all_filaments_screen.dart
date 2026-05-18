@@ -3,14 +3,14 @@ import 'package:filament_nexus/features/filaments/presentation/widgets/filament_
 import 'package:filament_nexus/features/filaments/presentation/widgets/filament_list.dart';
 import 'package:flutter/material.dart';
 
-class AllFilaments extends StatefulWidget {
-  const AllFilaments({super.key});
+class AllFilamentsScreen extends StatefulWidget {
+  const AllFilamentsScreen({super.key});
 
   @override
-  State<AllFilaments> createState() => _AllFilamentsState();
+  State<AllFilamentsScreen> createState() => _AllFilamentsScreenState();
 }
 
-class _AllFilamentsState extends State<AllFilaments> {
+class _AllFilamentsScreenState extends State<AllFilamentsScreen> {
   final filamentList = mockFilaments;
 
   @override
