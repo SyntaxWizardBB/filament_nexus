@@ -6,7 +6,7 @@ class FilamentList extends StatelessWidget {
   final List<Filament> filaments;
   final ValueChanged<Filament>? onTap;
 
-  FilamentList({super.key, List<Filament>? filaments, this.onTap})
+  FilamentList({super.key, required List<Filament>? filaments, this.onTap})
     : filaments = filaments ?? [];
 
   @override
