@@ -1,4 +1,5 @@
 import 'package:filament_nexus/features/filaments/domain/filament.dart';
+import 'package:filament_nexus/features/filaments/domain/filament_detail.dart';
 import 'package:filament_nexus/features/filaments/domain/filament_type.dart';
 import 'package:filament_nexus/features/filaments/domain/filament_vendor.dart';
 import 'package:filament_nexus/features/filaments/domain/filament_rating.dart';
@@ -17,6 +18,11 @@ final List<Filament> mockFilaments = [
     printSpeedMax: 150,
     fanSpeedFirstLayer: 0,
     fanSpeed: 100,
+    details: FilamentDetails(
+      ecoFriendly: true,
+      foodSafe: true,
+      forLightweightBuild: true,
+    ),
     ratings: FilamentRatings(
       workability: 9,
       warping: 9,
@@ -38,6 +44,11 @@ final List<Filament> mockFilaments = [
     printSpeedMax: 150,
     fanSpeedFirstLayer: 80,
     fanSpeed: 80,
+    details: FilamentDetails(
+      uvResistant: true,
+      solventResistant: true,
+      abrasionResistant: true,
+    ),
   ),
   Filament(
     id: 'f-abs-pro',
@@ -52,6 +63,7 @@ final List<Filament> mockFilaments = [
     printSpeedMax: 120,
     fanSpeedFirstLayer: 0,
     fanSpeed: 30,
+    details: FilamentDetails(fireRetardant: true, solventResistant: true),
     ratings: FilamentRatings(
       workability: 7,
       warping: 4,
@@ -73,6 +85,11 @@ final List<Filament> mockFilaments = [
     printSpeedMax: 60,
     fanSpeedFirstLayer: 0,
     fanSpeed: 60,
+    details: FilamentDetails(
+      fexible: true,
+      abrasionResistant: true,
+      waterSoluble: false,
+    ),
     ratings: FilamentRatings(
       workability: 6,
       warping: 5,
@@ -94,6 +111,7 @@ final List<Filament> mockFilaments = [
     printSpeedMax: 120,
     fanSpeedFirstLayer: 0,
     fanSpeed: 20,
+    details: FilamentDetails(uvResistant: true, ecoFriendly: false),
     ratings: FilamentRatings(
       workability: 5,
       warping: 6,
@@ -136,6 +154,7 @@ final List<Filament> mockFilaments = [
     printSpeedMax: 80,
     fanSpeedFirstLayer: 0,
     fanSpeed: 20,
+    details: FilamentDetails(electricallyConductive: true, fireRetardant: true),
     ratings: FilamentRatings(
       workability: 4,
       warping: 7,
@@ -157,5 +176,9 @@ final List<Filament> mockFilaments = [
     printSpeedMax: 100,
     fanSpeedFirstLayer: 0,
     fanSpeed: 30,
+    details: FilamentDetails(
+      abrasionResistant: true,
+      forLightweightBuild: true,
+    ),
   ),
 ];
