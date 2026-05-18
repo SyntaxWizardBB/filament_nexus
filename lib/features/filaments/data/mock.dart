@@ -1,6 +1,7 @@
 import 'package:filament_nexus/features/filaments/domain/filament.dart';
 import 'package:filament_nexus/features/filaments/domain/filament_type.dart';
 import 'package:filament_nexus/features/filaments/domain/filament_vendor.dart';
+import 'package:filament_nexus/features/filaments/domain/filament_rating.dart';
 
 final List<Filament> mockFilaments = [
   Filament(
@@ -16,6 +17,13 @@ final List<Filament> mockFilaments = [
     printSpeedMax: 150,
     fanSpeedFirstLayer: 0,
     fanSpeed: 100,
+    ratings: FilamentRatings(
+      workability: 9,
+      warping: 9,
+      stringing: 10,
+      shrinking: 10,
+      draftSensitivity: 10,
+    ),
   ),
   Filament(
     id: 'f-petg-iron',
@@ -44,6 +52,13 @@ final List<Filament> mockFilaments = [
     printSpeedMax: 120,
     fanSpeedFirstLayer: 0,
     fanSpeed: 30,
+    ratings: FilamentRatings(
+      workability: 7,
+      warping: 4,
+      stringing: 5,
+      shrinking: 3,
+      draftSensitivity: 6,
+    ),
   ),
   Filament(
     id: 'f-tpu-flex',
@@ -58,6 +73,13 @@ final List<Filament> mockFilaments = [
     printSpeedMax: 60,
     fanSpeedFirstLayer: 0,
     fanSpeed: 60,
+    ratings: FilamentRatings(
+      workability: 6,
+      warping: 5,
+      stringing: 4,
+      shrinking: 3,
+      draftSensitivity: 2,
+    ),
   ),
   Filament(
     id: 'f-asa-core',
@@ -72,6 +94,13 @@ final List<Filament> mockFilaments = [
     printSpeedMax: 120,
     fanSpeedFirstLayer: 0,
     fanSpeed: 20,
+    ratings: FilamentRatings(
+      workability: 5,
+      warping: 6,
+      stringing: 4,
+      shrinking: 5,
+      draftSensitivity: 7,
+    ),
   ),
   Filament(
     id: 'f-pla-matte',
@@ -86,6 +115,13 @@ final List<Filament> mockFilaments = [
     printSpeedMax: 120,
     fanSpeedFirstLayer: 0,
     fanSpeed: 100,
+    ratings: FilamentRatings(
+      workability: 7,
+      warping: 3,
+      stringing: 4,
+      shrinking: 2,
+      draftSensitivity: 5,
+    ),
   ),
   Filament(
     id: 'f-pc-tough',
@@ -100,6 +136,13 @@ final List<Filament> mockFilaments = [
     printSpeedMax: 80,
     fanSpeedFirstLayer: 0,
     fanSpeed: 20,
+    ratings: FilamentRatings(
+      workability: 4,
+      warping: 7,
+      stringing: 5,
+      shrinking: 6,
+      draftSensitivity: 8,
+    ),
   ),
   Filament(
     id: 'f-pa-cf',

@@ -1,5 +1,8 @@
-import 'package:flutter/material.dart';
+import 'package:filament_nexus/app/theme/app_colors.dart';
 import 'package:filament_nexus/features/filaments/domain/filament.dart';
+import 'package:filament_nexus/features/filaments/domain/filament_rating_level.dart';
+import 'package:filament_nexus/shared/widgets/filament_icon.dart';
+import 'package:flutter/material.dart';
 
 class FilamentCard extends StatelessWidget {
   final Filament filament;
@@ -18,14 +21,14 @@ class FilamentCard extends StatelessWidget {
         onTap: onTap,
         child: Ink(
           decoration: BoxDecoration(
-            color: Colors.grey.shade200,
+            color: AppColors.bg500,
             borderRadius: BorderRadius.circular(16),
           ),
           padding: const EdgeInsets.all(12),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              _FilamentIcon(color: Colors.green.shade700),
+              _FilamentIcon(color: filament.ratings.level.color),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
@@ -34,7 +37,7 @@ class FilamentCard extends StatelessWidget {
                     Text(
                       '${filament.type.name.toUpperCase()}  ${filament.vendor.name}',
                       style: theme.textTheme.labelSmall?.copyWith(
-                        color: Colors.grey.shade700,
+                        color: AppColors.textLight,
                         letterSpacing: 0.6,
                       ),
                     ),
@@ -87,7 +90,7 @@ class FilamentCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
-              Icon(Icons.chevron_right, color: Colors.grey.shade700),
+              const Icon(Icons.chevron_right, color: AppColors.textLight),
             ],
           ),
         ),
@@ -103,14 +106,10 @@ class _FilamentIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: 40,
       height: 40,
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.15),
-        shape: BoxShape.circle,
-      ),
-      child: Center(child: Icon(Icons.album, color: color, size: 24)),
+      child: Center(child: filamentIcon(color: color)),
     );
   }
 }
@@ -128,12 +127,12 @@ class _SpecRow extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 14, color: Colors.grey.shade800),
+        Icon(icon, size: 14, color: AppColors.textLight),
         const SizedBox(width: 4),
         Text(
           text,
           style: theme.textTheme.bodySmall?.copyWith(
-            color: Colors.grey.shade900,
+            color: AppColors.textLight,
           ),
         ),
       ],
