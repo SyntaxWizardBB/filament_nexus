@@ -1,4 +1,5 @@
 import 'package:filament_nexus/app/theme/app_colors.dart';
+import 'package:filament_nexus/features/filaments/presentation/add_edit_filament_screen.dart';
 import 'package:filament_nexus/features/filaments/presentation/all_filaments_screen.dart';
 import 'package:filament_nexus/features/filaments/presentation/my_filaments_screen.dart';
 import 'package:filament_nexus/shared/widgets/filament_icon.dart';
@@ -102,7 +103,14 @@ class _HomeShellState extends State<HomeShell> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const AddEditFilamentScreen(),
+            ),
+          );
+        },
         tooltip: 'Hinzufügen',
         child: const Icon(Icons.add),
       ),

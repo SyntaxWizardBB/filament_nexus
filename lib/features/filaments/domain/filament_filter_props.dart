@@ -13,7 +13,7 @@ final allPropertyOptions = <FilamentPropertyOption>[
   FilamentPropertyOption(key: 'electricallyConductive', label: 'Leitfähig'),
   FilamentPropertyOption(key: 'magnetic', label: 'Magnetisch'),
   FilamentPropertyOption(key: 'waterSoluble', label: 'Wasserlöslich'),
-  FilamentPropertyOption(key: 'fexible', label: 'Flexibel'),
+  FilamentPropertyOption(key: 'flexible', label: 'Flexibel'),
   FilamentPropertyOption(key: 'foodSafe', label: 'Lebensmittelecht'),
   FilamentPropertyOption(key: 'abrasionResistant', label: 'Abriebfest'),
   FilamentPropertyOption(key: 'ecoFriendly', label: 'Ökologisch'),
@@ -35,8 +35,8 @@ bool hasProperty(Filament filament, String key) {
       return details.magnetic;
     case 'waterSoluble':
       return details.waterSoluble;
-    case 'fexible':
-      return details.fexible;
+    case 'flexible':
+      return details.flexible;
     case 'foodSafe':
       return details.foodSafe;
     case 'abrasionResistant':

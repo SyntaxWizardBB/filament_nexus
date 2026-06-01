@@ -18,6 +18,7 @@ class Filament {
   final int fanSpeed;
   final FilamentDetails details;
   final FilamentRatings ratings;
+  final String remark;
 
   const Filament({
     required this.id,
@@ -34,5 +35,6 @@ class Filament {
     this.fanSpeed = 0,
     this.details = const FilamentDetails(),
     this.ratings = const FilamentRatings(),
+    this.remark = '',
   });
 }

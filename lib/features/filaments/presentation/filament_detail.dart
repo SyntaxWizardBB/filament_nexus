@@ -236,8 +236,8 @@ class _SectionDivider extends StatelessWidget {
 List<String> _buildPropertyTags(FilamentDetails details) {
   final tags = <String>[];
 
-  if (details.densityTemp > 0) {
-    tags.add('Dichte: ${_formatNumber(details.densityTemp)}');
+  if (details.densityTolerance > 0) {
+    tags.add('Dichte: ${_formatNumber(details.densityTolerance)}');
   }
   if (details.meltPointTemp > 0) {
     tags.add('Schmelzpunkt: ${_formatNumber(details.meltPointTemp)}C');
@@ -250,7 +250,7 @@ List<String> _buildPropertyTags(FilamentDetails details) {
   if (details.electricallyConductive) tags.add('Elektrisch leitend');
   if (details.magnetic) tags.add('Magnetisch');
   if (details.waterSoluble) tags.add('Wasserlöslich');
-  if (details.fexible) tags.add('Flexibel');
+  if (details.flexible) tags.add('Flexibel');
   if (details.foodSafe) tags.add('Lebensmittelecht');
   if (details.abrasionResistant) tags.add('Abriebfest');
   if (details.ecoFriendly) tags.add('Umweltfreundlich');

@@ -1,5 +1,6 @@
 class FilamentDetails {
-  final double densityTemp;
+  final double density;
+  final double densityTolerance;
   final double meltPointTemp;
   final double glassTransitionTemp;
   final bool uvResistant;
@@ -7,7 +8,7 @@ class FilamentDetails {
   final bool electricallyConductive;
   final bool magnetic;
   final bool waterSoluble;
-  final bool fexible;
+  final bool flexible;
   final bool foodSafe;
   final bool abrasionResistant;
   final bool ecoFriendly;
@@ -15,7 +16,8 @@ class FilamentDetails {
   final bool forLightweightBuild;
 
   const FilamentDetails({
-    this.densityTemp = 0.0,
+    this.density = 0.0,
+    this.densityTolerance = 0.0,
     this.meltPointTemp = 0.0,
     this.glassTransitionTemp = 0.0,
     this.uvResistant = false,
@@ -23,7 +25,7 @@ class FilamentDetails {
     this.electricallyConductive = false,
     this.magnetic = false,
     this.waterSoluble = false,
-    this.fexible = false,
+    this.flexible = false,
     this.foodSafe = false,
     this.abrasionResistant = false,
     this.ecoFriendly = false,

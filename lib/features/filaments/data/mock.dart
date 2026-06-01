@@ -86,7 +86,7 @@ final List<Filament> mockFilaments = [
     fanSpeedFirstLayer: 0,
     fanSpeed: 60,
     details: FilamentDetails(
-      fexible: true,
+      flexible: true,
       abrasionResistant: true,
       waterSoluble: false,
     ),
