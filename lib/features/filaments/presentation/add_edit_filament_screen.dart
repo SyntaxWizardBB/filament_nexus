@@ -52,6 +52,16 @@ class _AddEditFilamentScreenState extends State<AddEditFilamentScreen> {
   }
 
   void _save() {
+    // Required fields live on the "Allgemein" tab — jump there if missing.
+    if (!_form.isValid) {
+      setState(() => _tabIndex = 0);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Bitte alle Felder unter „Allgemein" ausfüllen.'),
+        ),
+      );
+      return;
+    }
     final id =
         widget.filament?.id ?? 'f-${DateTime.now().millisecondsSinceEpoch}';
     FilamentRepository.instance.save(_form.toFilament(id: id));
@@ -97,17 +107,30 @@ class _AddEditFilamentScreenState extends State<AddEditFilamentScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: _SaveBar(onSave: _save),
+      bottomNavigationBar: _buildBottomBar(),
+    );
+  }
+
+  /// When creating, tabs 1+2 show "Weiter" (advance) and only the last tab
+  /// shows "Speichern". When editing, every tab shows "Speichern".
+  Widget _buildBottomBar() {
+    final isLastTab = _tabIndex == _tabLabels.length - 1;
+    final saveMode = widget.isEditing || isLastTab;
+
+    return _BottomBar(
+      label: saveMode ? 'Speichern' : 'Weiter',
+      onPressed: saveMode ? _save : () => _goToTab(_tabIndex + 1),
     );
   }
 }
 
-/// Bottom action bar: a single full-width "Speichern" button.
-/// Tab navigation happens via the top segmented control.
-class _SaveBar extends StatelessWidget {
-  final VoidCallback onSave;
+/// Bottom action bar with a single full-width button. The label/action is
+/// decided by the screen ("Weiter" to advance vs. "Speichern" to persist).
+class _BottomBar extends StatelessWidget {
+  final String label;
+  final VoidCallback onPressed;
 
-  const _SaveBar({required this.onSave});
+  const _BottomBar({required this.label, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -116,14 +139,14 @@ class _SaveBar extends StatelessWidget {
       child: SizedBox(
         width: double.infinity,
         child: FilledButton(
-          onPressed: onSave,
+          onPressed: onPressed,
           style: FilledButton.styleFrom(
             padding: const EdgeInsets.symmetric(vertical: 16),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppRadii.pill),
             ),
           ),
-          child: const Text('Speichern'),
+          child: Text(label),
         ),
       ),
     );

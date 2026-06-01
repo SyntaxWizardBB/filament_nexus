@@ -86,6 +86,25 @@ class FilamentFormController {
     }
   }
 
+  /// All fields on the "Allgemein" tab are required for saving; the "Details"
+  /// and "Bewertung" tabs are optional.
+  bool get isValid =>
+      type != null &&
+      vendor != null &&
+      name.text.trim().isNotEmpty &&
+      _generalNumbers.every((c) => c.text.trim().isNotEmpty);
+
+  List<TextEditingController> get _generalNumbers => [
+    printTempMin,
+    printTempMax,
+    bedTempMin,
+    bedTempMax,
+    printSpeedMin,
+    printSpeedMax,
+    fanFirstLayer,
+    fan,
+  ];
+
   // Prefill with the value when editing (incl. 0), empty when creating.
   static TextEditingController _intCtrl(int? value) =>
       TextEditingController(text: value == null ? '' : value.toString());
