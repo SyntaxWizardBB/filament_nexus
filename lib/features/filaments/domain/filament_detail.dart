@@ -1,18 +1,35 @@
 class FilamentDetails {
-  final double densityTemp = 0.0;
-  final double meltPointTemp = 0.0;
-  final double glassTransitionTemp = 0.0;
-  final bool uvResistant = false;
-  final bool solventResistant = false;
-  final bool electricallyConductive = false;
-  final bool magnetic = false;
-  final bool waterSoluble = false;
-  final bool fexible = false;
-  final bool foodSafe = false;
-  final bool abrasionResistant = false;
-  final bool ecoFriendly = false;
-  final bool fireRetardant = false;
-  final bool forLightweightBuild = false;
+  final double density;
+  final double densityTolerance;
+  final double meltPointTemp;
+  final double glassTransitionTemp;
+  final bool uvResistant;
+  final bool solventResistant;
+  final bool electricallyConductive;
+  final bool magnetic;
+  final bool waterSoluble;
+  final bool flexible;
+  final bool foodSafe;
+  final bool abrasionResistant;
+  final bool ecoFriendly;
+  final bool fireRetardant;
+  final bool forLightweightBuild;
 
-  const FilamentDetails();
+  const FilamentDetails({
+    this.density = 0.0,
+    this.densityTolerance = 0.0,
+    this.meltPointTemp = 0.0,
+    this.glassTransitionTemp = 0.0,
+    this.uvResistant = false,
+    this.solventResistant = false,
+    this.electricallyConductive = false,
+    this.magnetic = false,
+    this.waterSoluble = false,
+    this.flexible = false,
+    this.foodSafe = false,
+    this.abrasionResistant = false,
+    this.ecoFriendly = false,
+    this.fireRetardant = false,
+    this.forLightweightBuild = false,
+  });
 }
