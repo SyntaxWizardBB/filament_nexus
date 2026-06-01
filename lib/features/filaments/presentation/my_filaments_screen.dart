@@ -27,7 +27,7 @@ class _MyFilamentsScreenState extends State<MyFilamentsScreen> {
     return allPropertyOptions
         .where(
           (option) => filamentList.any(
-            (filament) => _hasProperty(filament, option.key),
+            (filament) => hasProperty(filament, option.key),
           ),
         )
         .toList();
@@ -41,43 +41,12 @@ class _MyFilamentsScreenState extends State<MyFilamentsScreen> {
       }
 
       if (_selectedProperties.isNotEmpty &&
-          !_selectedProperties.any((key) => _hasProperty(filament, key))) {
+          !_selectedProperties.any((key) => hasProperty(filament, key))) {
         return false;
       }
 
       return true;
     }).toList();
-  }
-
-  bool _hasProperty(Filament filament, String key) {
-    final details = filament.details;
-
-    switch (key) {
-      case 'uvResistant':
-        return details.uvResistant;
-      case 'solventResistant':
-        return details.solventResistant;
-      case 'electricallyConductive':
-        return details.electricallyConductive;
-      case 'magnetic':
-        return details.magnetic;
-      case 'waterSoluble':
-        return details.waterSoluble;
-      case 'fexible':
-        return details.fexible;
-      case 'foodSafe':
-        return details.foodSafe;
-      case 'abrasionResistant':
-        return details.abrasionResistant;
-      case 'ecoFriendly':
-        return details.ecoFriendly;
-      case 'fireRetardant':
-        return details.fireRetardant;
-      case 'forLightweightBuild':
-        return details.forLightweightBuild;
-      default:
-        return false;
-    }
   }
 
   @override

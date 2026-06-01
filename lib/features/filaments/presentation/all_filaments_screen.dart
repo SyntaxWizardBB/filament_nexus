@@ -1,6 +1,7 @@
 import 'package:filament_nexus/features/filaments/data/mock.dart';
 import 'package:filament_nexus/features/filaments/domain/filament.dart';
 import 'package:filament_nexus/features/filaments/domain/filament_filter_props.dart';
+import 'package:filament_nexus/features/filaments/presentation/filament_detail.dart';
 import 'package:filament_nexus/features/filaments/presentation/widgets/filament_filter.dart';
 import 'package:filament_nexus/features/filaments/presentation/widgets/filament_list.dart';
 import 'package:flutter/material.dart';
@@ -26,9 +27,8 @@ class _AllFilamentsScreenState extends State<AllFilamentsScreen> {
   List<FilamentPropertyOption> get _propertyOptions {
     return allPropertyOptions
         .where(
-          (option) => filamentList.any(
-            (filament) => _hasProperty(filament, option.key),
-          ),
+          (option) =>
+              filamentList.any((filament) => hasProperty(filament, option.key)),
         )
         .toList();
   }
@@ -41,43 +41,12 @@ class _AllFilamentsScreenState extends State<AllFilamentsScreen> {
       }
 
       if (_selectedProperties.isNotEmpty &&
-          !_selectedProperties.any((key) => _hasProperty(filament, key))) {
+          !_selectedProperties.any((key) => hasProperty(filament, key))) {
         return false;
       }
 
       return true;
     }).toList();
-  }
-
-  bool _hasProperty(Filament filament, String key) {
-    final details = filament.details;
-
-    switch (key) {
-      case 'uvResistant':
-        return details.uvResistant;
-      case 'solventResistant':
-        return details.solventResistant;
-      case 'electricallyConductive':
-        return details.electricallyConductive;
-      case 'magnetic':
-        return details.magnetic;
-      case 'waterSoluble':
-        return details.waterSoluble;
-      case 'fexible':
-        return details.fexible;
-      case 'foodSafe':
-        return details.foodSafe;
-      case 'abrasionResistant':
-        return details.abrasionResistant;
-      case 'ecoFriendly':
-        return details.ecoFriendly;
-      case 'fireRetardant':
-        return details.fireRetardant;
-      case 'forLightweightBuild':
-        return details.forLightweightBuild;
-      default:
-        return false;
-    }
   }
 
   @override
@@ -94,8 +63,24 @@ class _AllFilamentsScreenState extends State<AllFilamentsScreen> {
           onPropertiesChanged: (value) =>
               setState(() => _selectedProperties = value),
         ),
-        Expanded(child: FilamentList(filaments: _filteredFilaments)),
+        Expanded(
+          child: FilamentList(
+            filaments: _filteredFilaments,
+            onTap: (filament) => _openDetails(context, filament),
+          ),
+        ),
       ],
+    );
+  }
+
+  void _openDetails(BuildContext context, Filament filament) {
+    showDialog<void>(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+        child: FilamentDetailModal(filament: filament),
+      ),
     );
   }
 }
