@@ -7,6 +7,7 @@ import 'package:filament_nexus/features/filaments/domain/filament_rating.dart';
 final List<Filament> mockFilaments = [
   Filament(
     id: 'f-pla-basic',
+    userId: 'edd369eb-4ed3-4681-ab41-775b2c2df76b',
     type: FilamentType(name: 'PLA'),
     vendor: FilamentVendor(name: 'Bambulab'),
     name: 'Basic',
@@ -33,6 +34,7 @@ final List<Filament> mockFilaments = [
   ),
   Filament(
     id: 'f-petg-iron',
+    userId: 'a6f71752-8d19-4927-9de2-282cb1d3f5ed',
     type: FilamentType(name: 'PETG'),
     vendor: FilamentVendor(name: 'Bambulab'),
     name: 'Iron',
@@ -51,6 +53,7 @@ final List<Filament> mockFilaments = [
     ),
   ),
   Filament(
+    userId: 'edd369eb-4ed3-4681-ab41-775b2c2df76b',
     id: 'f-abs-pro',
     type: FilamentType(name: 'ABS'),
     vendor: FilamentVendor(name: 'Prusa'),
@@ -73,6 +76,7 @@ final List<Filament> mockFilaments = [
     ),
   ),
   Filament(
+    userId: 'a6f71752-8d19-4927-9de2-282cb1d3f5ed',
     id: 'f-tpu-flex',
     type: FilamentType(name: 'TPU'),
     vendor: FilamentVendor(name: 'Overture'),
@@ -99,6 +103,7 @@ final List<Filament> mockFilaments = [
     ),
   ),
   Filament(
+    userId: 'edd369eb-4ed3-4681-ab41-775b2c2df76b',
     id: 'f-asa-core',
     type: FilamentType(name: 'ASA'),
     vendor: FilamentVendor(name: 'Polymaker'),
@@ -121,6 +126,7 @@ final List<Filament> mockFilaments = [
     ),
   ),
   Filament(
+    userId: 'a6f71752-8d19-4927-9de2-282cb1d3f5ed',
     id: 'f-pla-matte',
     type: FilamentType(name: 'PLA'),
     vendor: FilamentVendor(name: 'eSUN'),
@@ -142,6 +148,7 @@ final List<Filament> mockFilaments = [
     ),
   ),
   Filament(
+    userId: 'edd369eb-4ed3-4681-ab41-775b2c2df76b',
     id: 'f-pc-tough',
     type: FilamentType(name: 'PC'),
     vendor: FilamentVendor(name: 'Polymaker'),
@@ -164,6 +171,7 @@ final List<Filament> mockFilaments = [
     ),
   ),
   Filament(
+    userId: 'a6f71752-8d19-4927-9de2-282cb1d3f5ed',
     id: 'f-pa-cf',
     type: FilamentType(name: 'PA-CF'),
     vendor: FilamentVendor(name: 'Bambulab'),

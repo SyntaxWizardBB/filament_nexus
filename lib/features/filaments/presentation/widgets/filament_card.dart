@@ -1,4 +1,5 @@
 import 'package:filament_nexus/app/theme/app_colors.dart';
+import 'package:filament_nexus/app/theme/app_radii.dart';
 import 'package:filament_nexus/features/filaments/domain/filament.dart';
 import 'package:filament_nexus/features/filaments/domain/filament_rating_level.dart';
 import 'package:filament_nexus/shared/widgets/filament_icon.dart';
@@ -17,12 +18,12 @@ class FilamentCard extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppRadii.card),
         onTap: onTap,
         child: Ink(
           decoration: BoxDecoration(
             color: AppColors.bg500,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(AppRadii.card),
           ),
           padding: const EdgeInsets.all(12),
           child: Row(

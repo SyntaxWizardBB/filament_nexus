@@ -1,3 +1,4 @@
+import 'package:filament_nexus/app/services/user_service.dart';
 import 'package:filament_nexus/features/filaments/data/filament_repository.dart';
 import 'package:filament_nexus/features/filaments/presentation/add_edit_filament_screen.dart';
 import 'package:filament_nexus/features/filaments/domain/filament.dart';
@@ -19,37 +20,44 @@ class _MyFilamentsScreenState extends State<MyFilamentsScreen> {
   final FilamentRepository _repository = FilamentRepository.instance;
 
   List<String> get _materialOptions {
+    final userId = UserService().userId;
     final options = _repository.filaments
-      .map((filament) => filament.type.name)
-      .toSet();
+        .where((filament) => filament.userId == userId)
+        .map((filament) => filament.type.name)
+        .toSet();
     final sorted = options.toList()..sort();
     return sorted;
   }
 
   List<FilamentPropertyOption> get _propertyOptions {
+    final userId = UserService().userId;
     return allPropertyOptions
         .where(
-          (option) => _repository.filaments.any(
-            (filament) => hasProperty(filament, option.key),
-          ),
+          (option) => _repository.filaments
+              .where((filament) => filament.userId == userId)
+              .any((filament) => hasProperty(filament, option.key)),
         )
         .toList();
   }
 
   List<Filament> get _filteredFilaments {
-    return _repository.filaments.where((filament) {
-      if (_selectedMaterials.isNotEmpty &&
-          !_selectedMaterials.contains(filament.type.name)) {
-        return false;
-      }
+    final userId = UserService().userId;
+    return _repository.filaments
+        .where((filament) => filament.userId == userId)
+        .where((filament) {
+          if (_selectedMaterials.isNotEmpty &&
+              !_selectedMaterials.contains(filament.type.name)) {
+            return false;
+          }
 
-      if (_selectedProperties.isNotEmpty &&
-          !_selectedProperties.any((key) => hasProperty(filament, key))) {
-        return false;
-      }
+          if (_selectedProperties.isNotEmpty &&
+              !_selectedProperties.any((key) => hasProperty(filament, key))) {
+            return false;
+          }
 
-      return true;
-    }).toList();
+          return true;
+        })
+        .toList();
   }
 
   @override

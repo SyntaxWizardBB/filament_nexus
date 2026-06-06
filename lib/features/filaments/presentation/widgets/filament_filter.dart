@@ -1,4 +1,5 @@
 import 'package:filament_nexus/app/theme/app_colors.dart';
+import 'package:filament_nexus/app/theme/app_radii.dart';
 import 'package:filament_nexus/features/filaments/domain/filament_filter_props.dart';
 import 'package:flutter/material.dart';
 
@@ -56,7 +57,7 @@ class FilamentFilter extends StatelessWidget {
                     ),
                     labelPadding: const EdgeInsets.symmetric(vertical: 8),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50),
+                      borderRadius: BorderRadius.circular(AppRadii.rounded),
                     ),
                     showCheckmark: false,
                     selectedColor: AppColors.bg200,
@@ -81,7 +82,7 @@ class FilamentFilter extends StatelessWidget {
                     ),
                     labelPadding: const EdgeInsets.symmetric(vertical: 8),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50),
+                      borderRadius: BorderRadius.circular(AppRadii.rounded),
                     ),
                     showCheckmark: false,
                     selectedColor: AppColors.bg200,
@@ -122,7 +123,7 @@ class FilamentFilter extends StatelessWidget {
                 constraints: const BoxConstraints(minWidth: 16),
                 decoration: BoxDecoration(
                   color: AppColors.primary,
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(AppRadii.rounded),
                 ),
                 alignment: Alignment.center,
                 child: Text(

@@ -1,4 +1,5 @@
 import 'package:filament_nexus/app/theme/app_colors.dart';
+import 'package:filament_nexus/app/theme/app_radii.dart';
 import 'package:filament_nexus/features/filaments/domain/filament.dart';
 import 'package:filament_nexus/features/filaments/domain/filament_detail.dart';
 import 'package:filament_nexus/features/filaments/domain/filament_rating_level.dart';
@@ -24,7 +25,7 @@ class FilamentDetailModal extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
           decoration: const BoxDecoration(
             color: AppColors.bg500,
-            borderRadius: BorderRadius.all(Radius.circular(24)),
+            borderRadius: BorderRadius.all(Radius.circular(AppRadii.card)),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -113,7 +114,7 @@ class FilamentDetailModal extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color: AppColors.bg200,
-                    borderRadius: BorderRadius.circular(999),
+                    borderRadius: BorderRadius.circular(AppRadii.rounded),
                   ),
                   child: Text(
                     'Keine speziellen Eigenschaften',
@@ -211,7 +212,7 @@ class _PropertyTag extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
         color: AppColors.bg200,
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: BorderRadius.circular(AppRadii.rounded),
       ),
       child: Text(
         label,

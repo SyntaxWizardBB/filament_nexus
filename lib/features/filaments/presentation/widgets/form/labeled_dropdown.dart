@@ -23,7 +23,7 @@ class LabeledDropdown<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.bg600,
+        color: AppColors.bg500,
         borderRadius: BorderRadius.circular(AppRadii.pill),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 20),

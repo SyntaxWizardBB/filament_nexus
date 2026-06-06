@@ -1,19 +1,16 @@
 import 'package:filament_nexus/app/theme/app_colors.dart';
+import 'package:filament_nexus/app/services/user_service.dart';
+import 'package:filament_nexus/app/theme/app_radii.dart';
 import 'package:filament_nexus/features/about/presentation/about_screen.dart';
 import 'package:filament_nexus/features/filaments/presentation/add_edit_filament_screen.dart';
 import 'package:filament_nexus/features/filaments/presentation/all_filaments_screen.dart';
 import 'package:filament_nexus/features/info/presentation/info_screen.dart';
 import 'package:filament_nexus/features/filaments/presentation/my_filaments_screen.dart';
+import 'package:filament_nexus/features/profile/presentation/profile_screen.dart';
 import 'package:filament_nexus/features/wiki/presentation/wiki_screen.dart';
 import 'package:filament_nexus/shared/widgets/filament_icon.dart';
 import 'package:flutter/material.dart';
 import 'theme/app_theme.dart';
-
-class User {
-  final String name;
-  User({required this.name});
-  String get initial => name.isNotEmpty ? name[0].toUpperCase() : '?';
-}
 
 class FilamentNexus extends StatelessWidget {
   const FilamentNexus({super.key});
@@ -37,7 +34,6 @@ class HomeShell extends StatefulWidget {
 }
 
 class _HomeShellState extends State<HomeShell> {
-  final User _user = User(name: 'Andreas');
   static const _titles = ['Alle Filamente', 'Meine Filamente'];
 
   final screens = [AllFilamentsScreen(), MyFilamentsScreen()];
@@ -59,6 +55,12 @@ class _HomeShellState extends State<HomeShell> {
 
   int _selectedIndex = 0;
 
+  @override
+  void initState() {
+    super.initState();
+    UserService().initialize();
+  }
+
   void _onItemTapped(int index) {
     setState(() => _selectedIndex = index);
   }
@@ -70,14 +72,31 @@ class _HomeShellState extends State<HomeShell> {
     ).push(MaterialPageRoute(builder: (_) => const InfoScreen()));
   }
 
+  void _openProfileScreen() {
+    try {
+      if (Scaffold.of(context).isDrawerOpen) {
+        Navigator.pop(context);
+      }
+    } catch (_) {
+      // Drawer-Check fehlgeschlagen, ignorieren
+    }
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => const ProfileScreen()));
+  }
+
   void _openWikiScreen() {
     Navigator.pop(context);
-    Navigator.of(context,).push(MaterialPageRoute(builder: (_) => const WikiScreen()));
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => const WikiScreen()));
   }
 
   void _openAboutScreen() {
     Navigator.pop(context);
-    Navigator.of(context,).push(MaterialPageRoute(builder: (_) => const AboutScreen()));
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => const AboutScreen()));
   }
 
   @override
@@ -113,6 +132,12 @@ class _HomeShellState extends State<HomeShell> {
               onTap: _openWikiScreen,
             ),
             ListTile(
+              leading: const Icon(Icons.person),
+              title: const Text('Profil'),
+              subtitle: const Text('Mein Benutzerprofil'),
+              onTap: _openProfileScreen,
+            ),
+            ListTile(
               leading: const Icon(Icons.group),
               title: const Text('Über uns'),
               subtitle: const Text('Informationen über die Entwickler der App'),
@@ -128,23 +153,21 @@ class _HomeShellState extends State<HomeShell> {
             onPressed: () => Scaffold.of(context).openDrawer(),
           ),
         ),
-        centerTitle: true, // Titel mittig
+        centerTitle: true,
         title: Text(_titles[_selectedIndex]),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 12),
             child: Tooltip(
-              message: 'Profil von ${_user.name}',
+              message: 'Profil öffnen',
               child: InkWell(
                 customBorder: const CircleBorder(),
-                onTap: () {
-                  // TODO: open profile screen with navigator push
-                },
+                onTap: _openProfileScreen,
                 child: CircleAvatar(
                   radius: 18,
                   backgroundColor: AppColors.primary,
                   child: Text(
-                    _user.initial,
+                    UserService().currentUser.avatarInitial,
                     style: const TextStyle(
                       color: AppColors.bg200,
                       fontWeight: FontWeight.bold,
@@ -157,7 +180,6 @@ class _HomeShellState extends State<HomeShell> {
           ),
         ],
       ),
-
       body: IndexedStack(index: _selectedIndex, children: screens),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selectedIndex,
@@ -166,7 +188,7 @@ class _HomeShellState extends State<HomeShell> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadii.pill)),
         onPressed: () {
           Navigator.push(
             context,

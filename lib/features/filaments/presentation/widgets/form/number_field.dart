@@ -35,7 +35,7 @@ class NumberField extends StatelessWidget {
           fillColor: AppColors.bg200,
           contentPadding: const EdgeInsets.symmetric(vertical: 12),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(AppRadii.field),
+            borderRadius: BorderRadius.circular(AppRadii.rounded),
             borderSide: BorderSide.none,
           ),
         ),
