@@ -1,7 +1,10 @@
 import 'package:filament_nexus/app/theme/app_colors.dart';
+import 'package:filament_nexus/features/about/presentation/about_screen.dart';
 import 'package:filament_nexus/features/filaments/presentation/add_edit_filament_screen.dart';
 import 'package:filament_nexus/features/filaments/presentation/all_filaments_screen.dart';
+import 'package:filament_nexus/features/info/presentation/info_screen.dart';
 import 'package:filament_nexus/features/filaments/presentation/my_filaments_screen.dart';
+import 'package:filament_nexus/features/wiki/presentation/wiki_screen.dart';
 import 'package:filament_nexus/shared/widgets/filament_icon.dart';
 import 'package:flutter/material.dart';
 import 'theme/app_theme.dart';
@@ -60,10 +63,71 @@ class _HomeShellState extends State<HomeShell> {
     setState(() => _selectedIndex = index);
   }
 
+  void _openInfoScreen() {
+    Navigator.pop(context);
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => const InfoScreen()));
+  }
+
+  void _openWikiScreen() {
+    Navigator.pop(context);
+    Navigator.of(context,).push(MaterialPageRoute(builder: (_) => const WikiScreen()));
+  }
+
+  void _openAboutScreen() {
+    Navigator.pop(context);
+    Navigator.of(context,).push(MaterialPageRoute(builder: (_) => const AboutScreen()));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: const BoxDecoration(color: AppColors.primary),
+              child: Align(
+                alignment: Alignment.bottomLeft,
+                child: Text(
+                  'Filament Nexus',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: AppColors.bg200,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.info_outline),
+              title: const Text('Info'),
+              subtitle: const Text('App-Infos und Beschreibung'),
+              onTap: _openInfoScreen,
+            ),
+            ListTile(
+              leading: const Icon(Icons.book),
+              title: const Text('Wiki'),
+              subtitle: const Text('Wiki-Entries anzeigen'),
+              onTap: _openWikiScreen,
+            ),
+            ListTile(
+              leading: const Icon(Icons.group),
+              title: const Text('Über uns'),
+              subtitle: const Text('Informationen über die Entwickler der App'),
+              onTap: _openAboutScreen,
+            ),
+          ],
+        ),
+      ),
       appBar: AppBar(
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+          ),
+        ),
         centerTitle: true, // Titel mittig
         title: Text(_titles[_selectedIndex]),
         actions: [
@@ -74,7 +138,7 @@ class _HomeShellState extends State<HomeShell> {
               child: InkWell(
                 customBorder: const CircleBorder(),
                 onTap: () {
-                  // TODO: open profile screen
+                  // TODO: open profile screen with navigator push
                 },
                 child: CircleAvatar(
                   radius: 18,
@@ -106,9 +170,7 @@ class _HomeShellState extends State<HomeShell> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (_) => const AddEditFilamentScreen(),
-            ),
+            MaterialPageRoute(builder: (_) => const AddEditFilamentScreen()),
           );
         },
         tooltip: 'Hinzufügen',

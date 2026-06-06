@@ -8,7 +8,7 @@ Widget filamentIcon({
   double size = 24,
 }) {
   final resolved =
-      color ?? (active ? AppColors.primary : AppColors.secondary);
+      color ?? (active ? AppColors.secondary : AppColors.primary);
   return SvgPicture.asset(
     'assets/icons/filament.svg',
     width: size,
