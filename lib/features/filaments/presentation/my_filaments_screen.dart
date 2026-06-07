@@ -17,6 +17,7 @@ class MyFilamentsScreen extends StatefulWidget {
 class _MyFilamentsScreenState extends State<MyFilamentsScreen> {
   Set<String> _selectedMaterials = <String>{};
   Set<String> _selectedProperties = <String>{};
+  String _query = '';
   final FilamentRepository _repository = FilamentRepository.instance;
 
   List<String> get _materialOptions {
@@ -41,10 +42,13 @@ class _MyFilamentsScreenState extends State<MyFilamentsScreen> {
   }
 
   List<Filament> get _filteredFilaments {
-    final userId = UserService().userId;
     return _repository.filaments
-        .where((filament) => filament.userId == userId)
+        .where((filament) => filament.userId == UserService().userId)
         .where((filament) {
+          if (!filament.name.toLowerCase().contains(_query.toLowerCase())) {
+            return false;
+          }
+
           if (_selectedMaterials.isNotEmpty &&
               !_selectedMaterials.contains(filament.type.name)) {
             return false;
@@ -76,6 +80,7 @@ class _MyFilamentsScreenState extends State<MyFilamentsScreen> {
               selectedProperties: _selectedProperties,
               onPropertiesChanged: (value) =>
                   setState(() => _selectedProperties = value),
+              onSearchChanged: (value) => setState(() => _query = value),
             ),
             Expanded(
               child: FilamentList(

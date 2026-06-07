@@ -33,10 +33,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _currentPasswordController = TextEditingController();
     _newPasswordController = TextEditingController();
     _confirmPasswordController = TextEditingController();
+    _nameController.addListener(_onFieldChanged);
+    _emailController.addListener(_onFieldChanged);
+    _currentPasswordController.addListener(_onFieldChanged);
+    _newPasswordController.addListener(_onFieldChanged);
+    _confirmPasswordController.addListener(_onFieldChanged);
+  }
+
+  void _onFieldChanged() => setState(() {});
+
+  bool get _canSave {
+    if (_nameController.text.trim().isEmpty ||
+        _emailController.text.trim().isEmpty) {
+      return false;
+    }
+    if (_newPasswordController.text.isNotEmpty) {
+      if (_currentPasswordController.text.isEmpty) return false;
+      if (_newPasswordController.text != _confirmPasswordController.text) {
+        return false;
+      }
+    }
+    return true;
   }
 
   @override
   void dispose() {
+    _nameController.removeListener(_onFieldChanged);
+    _emailController.removeListener(_onFieldChanged);
+    _currentPasswordController.removeListener(_onFieldChanged);
+    _newPasswordController.removeListener(_onFieldChanged);
+    _confirmPasswordController.removeListener(_onFieldChanged);
     _nameController.dispose();
     _emailController.dispose();
     _currentPasswordController.dispose();
@@ -274,7 +300,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: _isLoading ? null : _handleSave,
+                  onPressed: (_isLoading || !_canSave) ? null : _handleSave,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     disabledBackgroundColor: Colors.grey[400],

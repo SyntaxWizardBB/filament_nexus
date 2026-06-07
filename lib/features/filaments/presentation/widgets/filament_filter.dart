@@ -12,6 +12,7 @@ class FilamentFilter extends StatelessWidget {
   final List<FilamentPropertyOption> propertyOptions;
   final Set<String> selectedProperties;
   final ValueChanged<Set<String>> onPropertiesChanged;
+  final ValueChanged<String> onSearchChanged;
 
   const FilamentFilter({
     super.key,
@@ -21,6 +22,7 @@ class FilamentFilter extends StatelessWidget {
     required this.propertyOptions,
     required this.selectedProperties,
     required this.onPropertiesChanged,
+    required this.onSearchChanged,
   });
 
   @override
@@ -37,7 +39,7 @@ class FilamentFilter extends StatelessWidget {
               leading: const Icon(Icons.search),
               hintText: 'Filament suchen',
               onChanged: (value) {
-                // Suchfunktion implementieren
+                onSearchChanged(value);
               },
             ),
           ),

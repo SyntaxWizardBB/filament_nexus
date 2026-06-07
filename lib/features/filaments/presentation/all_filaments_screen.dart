@@ -17,6 +17,7 @@ class _AllFilamentsScreenState extends State<AllFilamentsScreen> {
   final FilamentRepository _repository = FilamentRepository.instance;
   Set<String> _selectedMaterials = <String>{};
   Set<String> _selectedProperties = <String>{};
+  String _query = '';
 
   List<String> get _materialOptions {
     final options = _repository.filaments
@@ -38,6 +39,10 @@ class _AllFilamentsScreenState extends State<AllFilamentsScreen> {
 
   List<Filament> get _filteredFilaments {
     return _repository.filaments.where((filament) {
+      if (!filament.name.toLowerCase().contains(_query.toLowerCase())) {
+        return false;
+      }
+
       if (_selectedMaterials.isNotEmpty &&
           !_selectedMaterials.contains(filament.type.name)) {
         return false;
@@ -68,6 +73,7 @@ class _AllFilamentsScreenState extends State<AllFilamentsScreen> {
               selectedProperties: _selectedProperties,
               onPropertiesChanged: (value) =>
                   setState(() => _selectedProperties = value),
+              onSearchChanged: (value) => setState(() => _query = value),
             ),
             Expanded(
               child: FilamentList(
