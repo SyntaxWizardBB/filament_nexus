@@ -5,6 +5,7 @@ import 'package:filament_nexus/features/filaments/domain/filament_vendor.dart';
 
 class Filament {
   final String id;
+  final String userId;
   final FilamentType type;
   final FilamentVendor vendor;
   final String name;
@@ -22,6 +23,7 @@ class Filament {
 
   const Filament({
     required this.id,
+    this.userId = 'default',
     required this.type,
     required this.vendor,
     required this.name,

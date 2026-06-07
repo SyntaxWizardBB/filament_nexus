@@ -143,7 +143,7 @@ class _BottomBar extends StatelessWidget {
           style: FilledButton.styleFrom(
             padding: const EdgeInsets.symmetric(vertical: 16),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppRadii.pill),
+              borderRadius: BorderRadius.circular(AppRadii.rounded),
             ),
           ),
           child: Text(label),

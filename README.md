@@ -71,6 +71,7 @@ Alle Filamente - Stateful Widget
 ```
 
 # App-Struktur
+
 Grundsätzlich verwenden wir für diese App die Feature-Struktur. Folgende Struktur inkl. Files ist geplant:
 
 ```
@@ -100,3 +101,24 @@ lib
 |   └───widgets
 ├───main.dart
 ```
+
+# Aufbau der App und Widgets(beschrieben)
+
+Die Filament Nexus App wird in der `main.dart` gestartet und ruft dort einzig das Widget `FilamentNexus` auf, welche in der `app.dart` erstellt ist.  
+In der `app.dart` wird das MaterialApp Widget erstellt, welches die grundlegende Struktur der App definiert. Es enthält das AppTheme und die Startseite (home) mit dem Widget `HomeSehll`. Die `HomeShell` ist ein Stateful Widget, welches die Navigation zwischen den verschiedenen Seiten der App ermöglicht (BottomNavigation) und die AppBar definiert.
+In der AppBar befindet sich der Titel der aktuellen Seite, sowie das Icon für das Profil. Zusätzlich ist der `FloatingActionButton` definiert, der das Hinzufügen von neuen Filamenten ermöglicht.
+
+Die `HomeShell` ist somit das zentrale Grundgerüst für alle Seiten der App.
+
+Für die Seiten "Alle Filamente" und "Meine Filamente" werden jeweils eigene Stateful Widgets erstellt, welche die jeweiligen Inhalte anzeigen. Die Seite "Alle Filamente" zeigt eine Liste aller Filamente an, während die Seite "Meine Filamente" nur die vom Nutzer hinzugefügten Filamente anzeigt.  
+Die Filamente sind in Form von Cards dargestellt, welche die wichtigsten Informationen über das Filament anzeigen. Jede Card ist ein eigenes Stateless Widget, welches die Informationen über das Filament als Parameter erhält. Wird von `Alle Filamente` auf ein Filament gedrückt, so wird ein Modal geöffnet mit einer Detailansicht des Filaments.
+Von `Meine Filamente` aus, wird die Bearbeitungsseite des Filaments geöffnet.
+
+Im Drawer (Burgermenü oben links) der App befindet sich eine Infoseite, eine Wiki-Seite und eine Über uns Seite. Sie werden in `app.dart` über eigene Funktionen aufgerufen und bestehen aus eigenen Scaffolds, welche eigene AppBars und Bodies haben.
+
+# Abweichungen zur Aufgabenstellung der Transferarbeit
+
+- Das Profil ist nicht wie gefordert teil der BottomNavigation, sondern als Icon in der AppBar.
+- Gemäss Aufgabe darf eine ListTile oder eigene Zeile verwendet werden. Wir haben die Liste der Filamente so gelöst, dass ein `ListenableBuilder` verwendet wird. Darin enthalten sidn dann die Listen mit einer `ListView` anstelle der `ListTile`. Es werden somit keine `ListTile` verwendet, sondern eigene Zeilen in Form von `Cards`.
+- Der Detailscreen ist als Modal gelöst, anstatt als eigener Screen. Es wird somit kein eigener Screen für die Detailansicht erstellt, sondern ein Modal, welches als `Dialig` geöffnet wird. Es wird damit nicht mit `Navigator.push` gearbeitet, sondern mit `showDialog`.
+- Der Infobereich ist nicht in der BottomNaviation, sondern in einem Drawer umgesetzt, weil aus unserer Sicht die Informationen über die App nicht so wichtig sind, dass sie in der BottomNavigation einen eigenen Platz verdienen.

@@ -1,4 +1,5 @@
 import 'package:filament_nexus/app/theme/app_colors.dart';
+import 'package:filament_nexus/app/theme/app_radii.dart';
 import 'package:flutter/material.dart';
 
 class FilamentRating extends StatelessWidget {
@@ -47,7 +48,7 @@ class RatingDot extends StatelessWidget {
       decoration: BoxDecoration(
         color: isFilled ? AppColors.primary : Colors.transparent,
         border: isFilled ? null : Border.all(color: AppColors.primary),
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: BorderRadius.circular(AppRadii.pill),
       ),
     );
   }

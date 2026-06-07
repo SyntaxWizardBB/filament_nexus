@@ -1,4 +1,4 @@
-import 'package:filament_nexus/features/filaments/data/mock.dart';
+import 'package:filament_nexus/features/filaments/data/filament_mock.dart';
 import 'package:filament_nexus/features/filaments/domain/filament.dart';
 import 'package:flutter/foundation.dart';
 
