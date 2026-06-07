@@ -35,7 +35,7 @@ class FilamentFormController {
 
   // Bewertung
   final Map<FilamentRatingKind, int> ratings;
-  final TextEditingController remark;
+  final TextEditingController description;
 
   FilamentFormController.fromFilament(Filament? f)
     : type = f?.type,
@@ -61,7 +61,7 @@ class FilamentFormController {
         for (final r in FilamentRatingKind.values)
           r: f == null ? 0 : r.read(f.ratings),
       },
-      remark = TextEditingController(text: f?.remark ?? '');
+      description = TextEditingController(text: f?.description ?? '');
 
   List<TextEditingController> get _all => [
     name,
@@ -77,7 +77,7 @@ class FilamentFormController {
     densityTolerance,
     meltPoint,
     glassTransition,
-    remark,
+    description,
   ];
 
   void dispose() {
@@ -126,7 +126,7 @@ class FilamentFormController {
       type: type ?? kFilamentTypes.first,
       vendor: vendor ?? kFilamentVendors.first,
       name: name.text.trim(),
-      remark: remark.text.trim(),
+      description: description.text.trim(),
       printTempMin: _int(printTempMin),
       printTempMax: _int(printTempMax),
       bedTempMin: _int(bedTempMin),

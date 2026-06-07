@@ -5,7 +5,7 @@ import 'package:filament_nexus/features/filaments/presentation/widgets/form/rati
 import 'package:filament_nexus/features/filaments/presentation/widgets/form/text_pill.dart';
 import 'package:flutter/material.dart';
 
-/// Tab "Bewertung": five 0-10 ratings plus a free-text remark.
+/// Tab "Bewertung": five 0-10 ratings plus a free-text description.
 class RatingTab extends StatelessWidget {
   final FilamentFormController form;
   final void Function(FilamentRatingKind, int) onRatingChanged;
@@ -32,7 +32,7 @@ class RatingTab extends StatelessWidget {
         ],
         const FieldLabel('Bemerkung'),
         const SizedBox(height: 6),
-        TextPill(controller: form.remark, minLines: 4, maxLines: 6),
+        TextPill(controller: form.description, minLines: 4, maxLines: 6),
       ],
     );
   }
