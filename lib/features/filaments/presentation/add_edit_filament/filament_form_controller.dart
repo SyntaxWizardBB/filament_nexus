@@ -1,3 +1,4 @@
+import 'package:filament_nexus/app/services/user_service.dart';
 import 'package:filament_nexus/features/filaments/domain/filament.dart';
 import 'package:filament_nexus/features/filaments/domain/filament_detail.dart';
 import 'package:filament_nexus/features/filaments/domain/filament_property.dart';
@@ -37,8 +38,12 @@ class FilamentFormController {
   final Map<FilamentRatingKind, int> ratings;
   final TextEditingController description;
 
+  // Ownership: preserved on edit, set to the current user on create.
+  final String _userId;
+
   FilamentFormController.fromFilament(Filament? f)
-    : type = f?.type,
+    : _userId = f?.userId ?? UserService().userId,
+      type = f?.type,
       vendor = f?.vendor,
       name = TextEditingController(text: f?.name ?? ''),
       printTempMin = _intCtrl(f?.printTempMin),
@@ -123,6 +128,7 @@ class FilamentFormController {
   Filament toFilament({required String id}) {
     return Filament(
       id: id,
+      userId: _userId,
       type: type ?? kFilamentTypes.first,
       vendor: vendor ?? kFilamentVendors.first,
       name: name.text.trim(),
