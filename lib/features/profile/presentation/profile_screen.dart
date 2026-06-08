@@ -47,8 +47,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _emailController.text.trim().isEmpty) {
       return false;
     }
-    if (_newPasswordController.text.isNotEmpty) {
-      if (_currentPasswordController.text.isEmpty) return false;
+    // A password change is all-or-nothing: as soon as any password field is
+    // touched, all three must be filled and new must match the confirmation.
+    final touchedPassword =
+        _currentPasswordController.text.isNotEmpty ||
+        _newPasswordController.text.isNotEmpty ||
+        _confirmPasswordController.text.isNotEmpty;
+    if (touchedPassword) {
+      if (_currentPasswordController.text.isEmpty ||
+          _newPasswordController.text.isEmpty ||
+          _confirmPasswordController.text.isEmpty) {
+        return false;
+      }
       if (_newPasswordController.text != _confirmPasswordController.text) {
         return false;
       }
