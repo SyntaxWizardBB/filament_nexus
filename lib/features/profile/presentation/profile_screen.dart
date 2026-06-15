@@ -3,7 +3,9 @@ import 'package:filament_nexus/app/theme/app_colors.dart';
 import 'package:filament_nexus/app/theme/app_radii.dart';
 import 'package:filament_nexus/app/utils/password_hasher.dart';
 import 'package:filament_nexus/features/profile/data/profile_repository.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:zxcvbn/zxcvbn.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -24,6 +26,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool _showConfirmPassword = false;
   bool _isLoading = false;
 
+  final Zxcvbn _zxcvbn = Zxcvbn();
+
   @override
   void initState() {
     super.initState();
@@ -42,28 +46,57 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void _onFieldChanged() => setState(() {});
 
-  bool get _canSave {
-    if (_nameController.text.trim().isEmpty ||
-        _emailController.text.trim().isEmpty) {
-      return false;
+  /// Coarse gate for the button: only the required base fields. Everything else
+  /// (e-mail format, password rules) is checked on tap and reported via SnackBar.
+  bool get _canSave =>
+      _nameController.text.trim().isNotEmpty &&
+      _emailController.text.trim().isNotEmpty;
+
+  /// Returns the first validation error reason, or null when everything is
+  /// valid. Used on save to show a SnackBar with the concrete reason.
+  String? _validationError() {
+    if (_nameController.text.trim().isEmpty) {
+      return 'Name ist erforderlich';
     }
-    // A password change is all-or-nothing: as soon as any password field is
-    // touched, all three must be filled and new must match the confirmation.
+    if (_emailController.text.trim().isEmpty) {
+      return 'E-Mail ist erforderlich';
+    }
+    if (!EmailValidator.validate(_emailController.text.trim())) {
+      return 'Bitte eine gültige E-Mail eingeben';
+    }
+
+    // A password change is all-or-nothing: as soon as any field is touched,
+    // all three are required and must be consistent.
     final touchedPassword =
         _currentPasswordController.text.isNotEmpty ||
         _newPasswordController.text.isNotEmpty ||
         _confirmPasswordController.text.isNotEmpty;
     if (touchedPassword) {
-      if (_currentPasswordController.text.isEmpty ||
-          _newPasswordController.text.isEmpty ||
-          _confirmPasswordController.text.isEmpty) {
-        return false;
+      if (_currentPasswordController.text.isEmpty) {
+        return 'Aktuelles Passwort erforderlich';
+      }
+      if (_newPasswordController.text.isEmpty) {
+        return 'Neues Passwort erforderlich';
+      }
+      if (_confirmPasswordController.text.isEmpty) {
+        return 'Bitte neues Passwort bestätigen';
       }
       if (_newPasswordController.text != _confirmPasswordController.text) {
-        return false;
+        return 'Neue Passwörter stimmen nicht überein';
+      }
+      // zxcvbn score: 0 (very weak) .. 4 (very strong); reject below 2.
+      final score = _zxcvbn.evaluate(_newPasswordController.text).score ?? 0;
+      if (score < 2) {
+        return 'Neues Passwort ist zu schwach';
+      }
+      if (!PasswordHasher.verifyPassword(
+        _currentPasswordController.text,
+        UserService().currentUser.passwordHash,
+      )) {
+        return 'Aktuelles Passwort ist falsch';
       }
     }
-    return true;
+    return null;
   }
 
   @override
@@ -82,47 +115,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _handleSave() async {
-    if (_nameController.text.isEmpty || _emailController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Name und E-Mail sind erforderlich')),
-      );
+    final error = _validationError();
+    if (error != null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error)));
       return;
     }
 
     final currentProfile = UserService().currentUser;
-    String newPasswordHash = currentProfile.passwordHash;
-
-    if (_newPasswordController.text.isNotEmpty) {
-      if (_currentPasswordController.text.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Aktuelles Passwort erforderlich')),
-        );
-        return;
-      }
-
-      if (!PasswordHasher.verifyPassword(
-        _currentPasswordController.text,
-        currentProfile.passwordHash,
-      )) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Aktuelles Passwort ist falsch')),
-        );
-        return;
-      }
-
-      if (_newPasswordController.text != _confirmPasswordController.text) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Neue Passwörter stimmen nicht überein'),
-          ),
-        );
-        return;
-      }
-
-      newPasswordHash = PasswordHasher.hashPassword(
-        _newPasswordController.text,
-      );
-    }
+    final newPasswordHash = _newPasswordController.text.isNotEmpty
+        ? PasswordHasher.hashPassword(_newPasswordController.text)
+        : currentProfile.passwordHash;
 
     setState(() => _isLoading = true);
     await Future.delayed(const Duration(milliseconds: 800));
