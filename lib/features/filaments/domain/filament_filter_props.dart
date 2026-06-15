@@ -51,3 +51,12 @@ bool hasProperty(Filament filament, String key) {
       return false;
   }
 }
+
+/// Whether [filament] matches the free-text [query], searching across name,
+/// vendor (Hersteller) and material (type).
+bool matchesQuery(Filament filament, String query) {
+  final q = query.toLowerCase();
+  return filament.name.toLowerCase().contains(q) ||
+      filament.vendor.name.toLowerCase().contains(q) ||
+      filament.type.name.toLowerCase().contains(q);
+}

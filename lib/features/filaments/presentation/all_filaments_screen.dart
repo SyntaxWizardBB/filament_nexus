@@ -39,7 +39,7 @@ class _AllFilamentsScreenState extends State<AllFilamentsScreen> {
 
   List<Filament> get _filteredFilaments {
     return _repository.filaments.where((filament) {
-      if (!filament.name.toLowerCase().contains(_query.toLowerCase())) {
+      if (!matchesQuery(filament, _query)) {
         return false;
       }
 

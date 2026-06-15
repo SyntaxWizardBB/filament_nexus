@@ -45,7 +45,7 @@ class _MyFilamentsScreenState extends State<MyFilamentsScreen> {
     return _repository.filaments
         .where((filament) => filament.userId == UserService().userId)
         .where((filament) {
-          if (!filament.name.toLowerCase().contains(_query.toLowerCase())) {
+          if (!matchesQuery(filament, _query)) {
             return false;
           }
 
