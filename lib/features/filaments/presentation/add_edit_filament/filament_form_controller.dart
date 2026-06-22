@@ -6,6 +6,8 @@ import 'package:filament_nexus/features/filaments/domain/filament_rating.dart';
 import 'package:filament_nexus/features/filaments/domain/filament_rating_kind.dart';
 import 'package:filament_nexus/features/filaments/domain/filament_type.dart';
 import 'package:filament_nexus/features/filaments/domain/filament_vendor.dart';
+import 'package:filament_nexus/app/utils/validators.dart';
+import 'package:filament_nexus/features/filaments/domain/material_ranges.dart';
 import 'package:flutter/material.dart';
 
 /// Holds the whole add/edit form state in one place: text controllers,
@@ -91,13 +93,66 @@ class FilamentFormController {
     }
   }
 
-  /// All fields on the "Allgemein" tab are required for saving; the "Details"
-  /// and "Bewertung" tabs are optional.
-  bool get isValid =>
-      type != null &&
-      vendor != null &&
-      name.text.trim().isNotEmpty &&
-      _generalNumbers.every((c) => c.text.trim().isNotEmpty);
+  /// Returns the first validation error reason, or null when the form is
+  /// valid. All checked fields live on the "Allgemein" tab; "Details" and
+  /// "Bewertung" stay optional.
+  String? validationError() {
+    if (type == null ||
+        vendor == null ||
+        name.text.trim().isEmpty ||
+        _generalNumbers.any((c) => c.text.trim().isEmpty)) {
+      return 'Bitte alle Felder unter „Allgemein" ausfüllen.';
+    }
+
+    const fanMessage = 'Lüfter muss zwischen 0 und 100 % liegen.';
+    const speedMessage = 'Druckgeschwindigkeit muss zwischen 1 und 1000 mm/s liegen.';
+
+    // Structural checks (min <= max, percentage and absolute speed bounds).
+    final structural =
+        Validators.minNotAboveMax(
+          _int(printTempMin),
+          _int(printTempMax),
+          label: 'Drucktemperatur',
+        ) ??
+        Validators.minNotAboveMax(
+          _int(bedTempMin),
+          _int(bedTempMax),
+          label: 'Bett-Temperatur',
+        ) ??
+        Validators.minNotAboveMax(
+          _int(printSpeedMin),
+          _int(printSpeedMax),
+          label: 'Druckgeschwindigkeit',
+        ) ??
+        Validators.inRange(_int(fanFirstLayer), min: 0, max: 100, message: fanMessage) ??
+        Validators.inRange(_int(fan), min: 0, max: 100, message: fanMessage) ??
+        Validators.inRange(_int(printSpeedMin), min: 1, max: 1000, message: speedMessage) ??
+        Validators.inRange(_int(printSpeedMax), min: 1, max: 1000, message: speedMessage);
+    if (structural != null) return structural;
+
+    // Material-specific temperature plausibility (generous windows).
+    return _temperaturePlausibility();
+  }
+
+  /// Checks nozzle and bed temperatures against the selected material's
+  /// plausible window (falls back to global bounds for unknown materials).
+  String? _temperaturePlausibility() {
+    final material = type?.name;
+    final ranges = materialRangesFor(material);
+    final forMaterial = material == null ? '' : ' für $material';
+
+    if (!ranges.nozzle.contains(_int(printTempMin)) ||
+        !ranges.nozzle.contains(_int(printTempMax))) {
+      return 'Drucktemperatur$forMaterial unplausibel '
+          '(erwartet ${ranges.nozzle.min}–${ranges.nozzle.max} °C).';
+    }
+    if (!ranges.bed.contains(_int(bedTempMin)) ||
+        !ranges.bed.contains(_int(bedTempMax))) {
+      return 'Bett-Temperatur$forMaterial unplausibel '
+          '(erwartet ${ranges.bed.min}–${ranges.bed.max} °C).';
+    }
+    return null;
+  }
 
   List<TextEditingController> get _generalNumbers => [
     printTempMin,

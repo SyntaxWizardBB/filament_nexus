@@ -52,14 +52,13 @@ class _AddEditFilamentScreenState extends State<AddEditFilamentScreen> {
   }
 
   void _save() {
-    // Required fields live on the "Allgemein" tab — jump there if missing.
-    if (!_form.isValid) {
+    // All validated fields live on the "Allgemein" tab — jump there on error.
+    final error = _form.validationError();
+    if (error != null) {
       setState(() => _tabIndex = 0);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Bitte alle Felder unter „Allgemein" ausfüllen.'),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error)));
       return;
     }
     final id =
