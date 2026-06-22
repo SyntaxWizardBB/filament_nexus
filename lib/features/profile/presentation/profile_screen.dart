@@ -2,10 +2,9 @@ import 'package:filament_nexus/app/services/user_service.dart';
 import 'package:filament_nexus/app/theme/app_colors.dart';
 import 'package:filament_nexus/app/theme/app_radii.dart';
 import 'package:filament_nexus/app/utils/password_hasher.dart';
+import 'package:filament_nexus/app/utils/validators.dart';
 import 'package:filament_nexus/features/profile/data/profile_repository.dart';
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:zxcvbn/zxcvbn.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -25,8 +24,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool _showNewPassword = false;
   bool _showConfirmPassword = false;
   bool _isLoading = false;
-
-  final Zxcvbn _zxcvbn = Zxcvbn();
 
   @override
   void initState() {
@@ -55,15 +52,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   /// Returns the first validation error reason, or null when everything is
   /// valid. Used on save to show a SnackBar with the concrete reason.
   String? _validationError() {
-    if (_nameController.text.trim().isEmpty) {
-      return 'Name ist erforderlich';
-    }
-    if (_emailController.text.trim().isEmpty) {
-      return 'E-Mail ist erforderlich';
-    }
-    if (!EmailValidator.validate(_emailController.text.trim())) {
-      return 'Bitte eine gültige E-Mail eingeben';
-    }
+    final base =
+        Validators.requiredText(_nameController.text, field: 'Name') ??
+        Validators.requiredText(_emailController.text, field: 'E-Mail') ??
+        Validators.email(_emailController.text);
+    if (base != null) return base;
 
     // A password change is all-or-nothing: as soon as any field is touched,
     // all three are required and must be consistent.
@@ -72,23 +65,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _newPasswordController.text.isNotEmpty ||
         _confirmPasswordController.text.isNotEmpty;
     if (touchedPassword) {
-      if (_currentPasswordController.text.isEmpty) {
-        return 'Aktuelles Passwort erforderlich';
-      }
-      if (_newPasswordController.text.isEmpty) {
-        return 'Neues Passwort erforderlich';
-      }
-      if (_confirmPasswordController.text.isEmpty) {
-        return 'Bitte neues Passwort bestätigen';
-      }
-      if (_newPasswordController.text != _confirmPasswordController.text) {
-        return 'Neue Passwörter stimmen nicht überein';
-      }
-      // zxcvbn score: 0 (very weak) .. 4 (very strong); reject below 2.
-      final score = _zxcvbn.evaluate(_newPasswordController.text).score ?? 0;
-      if (score < 2) {
-        return 'Neues Passwort ist zu schwach';
-      }
+      final passwordError =
+          Validators.requiredText(
+            _currentPasswordController.text,
+            field: 'Aktuelles Passwort',
+          ) ??
+          Validators.requiredText(
+            _newPasswordController.text,
+            field: 'Neues Passwort',
+          ) ??
+          Validators.requiredText(
+            _confirmPasswordController.text,
+            field: 'Bestätigung',
+          ) ??
+          Validators.match(
+            _newPasswordController.text,
+            _confirmPasswordController.text,
+            message: 'Neue Passwörter stimmen nicht überein',
+          ) ??
+          Validators.passwordStrength(
+            _newPasswordController.text,
+            message: 'Neues Passwort ist zu schwach',
+          );
+      if (passwordError != null) return passwordError;
+
+      // Business check needs the stored hash, so it stays here.
       if (!PasswordHasher.verifyPassword(
         _currentPasswordController.text,
         UserService().currentUser.passwordHash,
