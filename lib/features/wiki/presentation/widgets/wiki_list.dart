@@ -38,7 +38,7 @@ class WikiList extends StatelessWidget {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('Schließen'),
+                  child: const Text('Schliessen'),
                 ),
               ],
             ),

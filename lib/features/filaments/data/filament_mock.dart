@@ -81,7 +81,7 @@ final List<Filament> mockFilaments = [
     type: FilamentType(name: 'TPU'),
     vendor: FilamentVendor(name: 'Overture'),
     name: 'Flex',
-    description: 'Gummiartig flexibel, ideal für Dichtungen und stoßdämpfende Teile.',
+    description: 'Gummiartig flexibel, ideal für Dichtungen und stossdämpfende Teile.',
     printTempMin: 210,
     printTempMax: 230,
     bedTempMin: 30,
