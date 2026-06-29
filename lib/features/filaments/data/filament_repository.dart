@@ -25,4 +25,10 @@ class FilamentRepository extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  /// Removes the filament with the given [id]. No-op if not found.
+  void delete(String id) {
+    _filaments.removeWhere((f) => f.id == id);
+    notifyListeners();
+  }
 }

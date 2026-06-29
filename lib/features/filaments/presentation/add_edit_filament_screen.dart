@@ -51,6 +51,35 @@ class _AddEditFilamentScreenState extends State<AddEditFilamentScreen> {
     setState(() => _tabIndex = index);
   }
 
+  Future<void> _confirmDelete() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Filament löschen'),
+        content: const Text(
+          'Dieses Filament wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Abbrechen'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(ctx).colorScheme.error,
+            ),
+            child: const Text('Löschen'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true && mounted) {
+      FilamentRepository.instance.delete(widget.filament!.id);
+      Navigator.of(context).pop();
+    }
+  }
+
   void _save() {
     // All validated fields live on the "Allgemein" tab — jump there on error.
     final error = _form.validationError();
@@ -73,6 +102,17 @@ class _AddEditFilamentScreenState extends State<AddEditFilamentScreen> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(widget.isEditing ? 'Filament bearbeiten' : 'Neues Filament'),
+        actions: [
+          if (widget.isEditing)
+            IconButton(
+              icon: Icon(
+                Icons.delete_outline,
+                color: Theme.of(context).colorScheme.error,
+              ),
+              tooltip: 'Löschen',
+              onPressed: _confirmDelete,
+            ),
+        ],
       ),
       body: Column(
         children: [
