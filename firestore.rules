@@ -1,0 +1,10 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Locked down for now — no client access until Firebase Auth + the
+    // Firestore data layer are in place. Replace with owner-based rules then.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
