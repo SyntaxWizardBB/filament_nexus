@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "151650662881",
+    "project_id": "filamentnexus",
+    "storage_bucket": "filamentnexus.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:151650662881:android:302d6e03e029c68e44faa0",
+        "android_client_info": {
+          "package_name": "com.example.filament_nexus"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA48IkYYhZyCl7jzo9pGGSP7rN7LjkVPmw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
