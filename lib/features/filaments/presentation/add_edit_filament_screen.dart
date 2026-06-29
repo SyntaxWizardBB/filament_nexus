@@ -75,12 +75,12 @@ class _AddEditFilamentScreenState extends State<AddEditFilamentScreen> {
       ),
     );
     if (confirmed == true && mounted) {
-      FilamentRepository.instance.delete(widget.filament!.id);
-      Navigator.of(context).pop();
+      await FilamentRepository.instance.delete(widget.filament!.id);
+      if (mounted) Navigator.of(context).pop();
     }
   }
 
-  void _save() {
+  Future<void> _save() async {
     // All validated fields live on the "Allgemein" tab — jump there on error.
     final error = _form.validationError();
     if (error != null) {
@@ -92,8 +92,8 @@ class _AddEditFilamentScreenState extends State<AddEditFilamentScreen> {
     }
     final id =
         widget.filament?.id ?? 'f-${DateTime.now().millisecondsSinceEpoch}';
-    FilamentRepository.instance.save(_form.toFilament(id: id));
-    Navigator.of(context).pop();
+    await FilamentRepository.instance.save(_form.toFilament(id: id));
+    if (mounted) Navigator.of(context).pop();
   }
 
   @override

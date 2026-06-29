@@ -1,4 +1,5 @@
 import 'package:filament_nexus/app/services/user_service.dart';
+import 'package:filament_nexus/features/filaments/data/filament_repository.dart';
 import 'package:filament_nexus/app/theme/app_colors.dart';
 import 'package:filament_nexus/app/theme/app_radii.dart';
 import 'package:filament_nexus/features/about/presentation/about_screen.dart';
@@ -44,6 +45,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
   void initState() {
     super.initState();
     UserService().initialize();
+    FilamentRepository.instance.load();
   }
 
   void _onItemTapped(int index) {
