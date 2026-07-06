@@ -10,6 +10,11 @@ class FilamentType {
 
   @override
   int get hashCode => name.hashCode;
+
+  Map<String, dynamic> toJson() => {'name': name};
+
+  factory FilamentType.fromJson(Map<String, dynamic> json) =>
+      FilamentType(name: json['name'] as String? ?? '');
 }
 
 // Predefined, selectable filament types for the dropdown.

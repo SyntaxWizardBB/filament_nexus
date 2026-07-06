@@ -39,4 +39,49 @@ class Filament {
     this.ratings = const FilamentRatings(),
     this.description = '',
   });
+
+  /// Serializes to a Firestore document map. [id] is stored as the document id,
+  /// so it is intentionally not part of the map.
+  Map<String, dynamic> toJson() => {
+    'userId': userId,
+    'type': type.toJson(),
+    'vendor': vendor.toJson(),
+    'name': name,
+    'description': description,
+    'printTempMin': printTempMin,
+    'printTempMax': printTempMax,
+    'bedTempMin': bedTempMin,
+    'bedTempMax': bedTempMax,
+    'printSpeedMin': printSpeedMin,
+    'printSpeedMax': printSpeedMax,
+    'fanSpeedFirstLayer': fanSpeedFirstLayer,
+    'fanSpeed': fanSpeed,
+    'details': details.toJson(),
+    'ratings': ratings.toJson(),
+  };
+
+  factory Filament.fromJson(String id, Map<String, dynamic> json) {
+    Map<String, dynamic> nested(String key) =>
+        Map<String, dynamic>.from(json[key] as Map? ?? const {});
+    int intOf(String key) => (json[key] as num?)?.toInt() ?? 0;
+
+    return Filament(
+      id: id,
+      userId: json['userId'] as String? ?? 'default',
+      type: FilamentType.fromJson(nested('type')),
+      vendor: FilamentVendor.fromJson(nested('vendor')),
+      name: json['name'] as String? ?? '',
+      description: json['description'] as String? ?? '',
+      printTempMin: intOf('printTempMin'),
+      printTempMax: intOf('printTempMax'),
+      bedTempMin: intOf('bedTempMin'),
+      bedTempMax: intOf('bedTempMax'),
+      printSpeedMin: intOf('printSpeedMin'),
+      printSpeedMax: intOf('printSpeedMax'),
+      fanSpeedFirstLayer: intOf('fanSpeedFirstLayer'),
+      fanSpeed: intOf('fanSpeed'),
+      details: FilamentDetails.fromJson(nested('details')),
+      ratings: FilamentRatings.fromJson(nested('ratings')),
+    );
+  }
 }

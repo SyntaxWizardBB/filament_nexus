@@ -10,6 +10,11 @@ class FilamentVendor {
 
   @override
   int get hashCode => name.hashCode;
+
+  Map<String, dynamic> toJson() => {'name': name};
+
+  factory FilamentVendor.fromJson(Map<String, dynamic> json) =>
+      FilamentVendor(name: json['name'] as String? ?? '');
 }
 
 // Predefined, selectable vendors for the dropdown

@@ -15,6 +15,22 @@ class FilamentRatings {
     this.draftSensitivity = 0,
   });
 
+  Map<String, dynamic> toJson() => {
+    'workability': workability,
+    'warping': warping,
+    'stringing': stringing,
+    'shrinking': shrinking,
+    'draftSensitivity': draftSensitivity,
+  };
+
+  factory FilamentRatings.fromJson(Map<String, dynamic> json) => FilamentRatings(
+    workability: (json['workability'] as num?)?.toInt() ?? 0,
+    warping: (json['warping'] as num?)?.toInt() ?? 0,
+    stringing: (json['stringing'] as num?)?.toInt() ?? 0,
+    shrinking: (json['shrinking'] as num?)?.toInt() ?? 0,
+    draftSensitivity: (json['draftSensitivity'] as num?)?.toInt() ?? 0,
+  );
+
   FilamentRatingLevel get level {
     final scored = [
       workability,
