@@ -1,10 +1,18 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Locked down for now — no client access until Firebase Auth + the
-    // Firestore data layer are in place. Replace with owner-based rules then.
-    match /{document=**} {
-      allow read, write: if false;
+
+    // Filament catalog:
+    //  - any signed-in user may read ("Alle Filamente")
+    //  - create/update/delete only by the owner (userId == their uid)
+    match /filaments/{filamentId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null
+                    && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if request.auth != null
+                    && resource.data.userId == request.auth.uid;
     }
+
+    // Everything else is denied by default.
   }
 }

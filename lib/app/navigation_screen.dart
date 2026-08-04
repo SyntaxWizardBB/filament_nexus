@@ -1,4 +1,4 @@
-import 'package:filament_nexus/app/services/user_service.dart';
+import 'package:filament_nexus/app/services/auth_service.dart';
 import 'package:filament_nexus/features/filaments/data/filament_repository.dart';
 import 'package:filament_nexus/app/theme/app_colors.dart';
 import 'package:filament_nexus/app/theme/app_radii.dart';
@@ -44,7 +44,6 @@ class _NavigationScreenState extends State<NavigationScreen> {
   @override
   void initState() {
     super.initState();
-    UserService().initialize();
     FilamentRepository.instance.load();
   }
 
@@ -84,6 +83,12 @@ class _NavigationScreenState extends State<NavigationScreen> {
     Navigator.of(
       context,
     ).push(MaterialPageRoute(builder: (_) => const AboutScreen()));
+  }
+
+  Future<void> _logout() async {
+    Navigator.pop(context); // close the drawer
+    await AuthService.instance.logout();
+    // The AuthGate reacts to the auth state and shows the login screen again.
   }
 
   @override
@@ -130,6 +135,12 @@ class _NavigationScreenState extends State<NavigationScreen> {
               subtitle: const Text('Informationen über die Entwickler der App'),
               onTap: _openAboutScreen,
             ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text('Abmelden'),
+              onTap: _logout,
+            ),
           ],
         ),
       ),
@@ -154,7 +165,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
                   radius: 18,
                   backgroundColor: AppColors.primary,
                   child: Text(
-                    UserService().currentUser.avatarInitial,
+                    AuthService.instance.avatarInitial,
                     style: const TextStyle(
                       color: AppColors.bg200,
                       fontWeight: FontWeight.bold,

@@ -1,4 +1,4 @@
-import 'package:filament_nexus/app/services/user_service.dart';
+import 'package:filament_nexus/app/services/auth_service.dart';
 import 'package:filament_nexus/features/filaments/domain/filament.dart';
 import 'package:filament_nexus/features/filaments/domain/filament_detail.dart';
 import 'package:filament_nexus/features/filaments/domain/filament_property.dart';
@@ -44,7 +44,7 @@ class FilamentFormController {
   final String _userId;
 
   FilamentFormController.fromFilament(Filament? f)
-    : _userId = f?.userId ?? UserService().userId,
+    : _userId = f?.userId ?? AuthService.instance.uid ?? '',
       type = f?.type,
       vendor = f?.vendor,
       name = TextEditingController(text: f?.name ?? ''),

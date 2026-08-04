@@ -1,11 +1,14 @@
-import 'package:filament_nexus/app/services/user_service.dart';
+import 'package:filament_nexus/app/services/auth_service.dart';
 import 'package:filament_nexus/app/theme/app_colors.dart';
 import 'package:filament_nexus/app/theme/app_radii.dart';
-import 'package:filament_nexus/app/utils/password_hasher.dart';
 import 'package:filament_nexus/app/utils/validators.dart';
-import 'package:filament_nexus/features/profile/data/profile_repository.dart';
 import 'package:flutter/material.dart';
 
+/// Profile management backed by Firebase Auth.
+///
+/// - Name  → `displayName` (editable)
+/// - E-Mail → the login identity (read-only)
+/// - Password → changed via reauthentication + `updatePassword`
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -14,151 +17,136 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  late TextEditingController _nameController;
-  late TextEditingController _emailController;
-  late TextEditingController _currentPasswordController;
-  late TextEditingController _newPasswordController;
-  late TextEditingController _confirmPasswordController;
+  late final TextEditingController _nameController;
+  late final TextEditingController _emailController;
+  final _currentPassword = TextEditingController();
+  final _newPassword = TextEditingController();
+  final _confirmPassword = TextEditingController();
 
-  bool _showCurrentPassword = false;
-  bool _showNewPassword = false;
-  bool _showConfirmPassword = false;
+  bool _showCurrent = false;
+  bool _showNew = false;
+  bool _showConfirm = false;
   bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    final profile = UserService().currentUser;
-    _nameController = TextEditingController(text: profile.name);
-    _emailController = TextEditingController(text: profile.email);
-    _currentPasswordController = TextEditingController();
-    _newPasswordController = TextEditingController();
-    _confirmPasswordController = TextEditingController();
-    _nameController.addListener(_onFieldChanged);
-    _emailController.addListener(_onFieldChanged);
-    _currentPasswordController.addListener(_onFieldChanged);
-    _newPasswordController.addListener(_onFieldChanged);
-    _confirmPasswordController.addListener(_onFieldChanged);
-  }
-
-  void _onFieldChanged() => setState(() {});
-
-  /// Coarse gate for the button: only the required base fields. Everything else
-  /// (e-mail format, password rules) is checked on tap and reported via SnackBar.
-  bool get _canSave =>
-      _nameController.text.trim().isNotEmpty &&
-      _emailController.text.trim().isNotEmpty;
-
-  /// Returns the first validation error reason, or null when everything is
-  /// valid. Used on save to show a SnackBar with the concrete reason.
-  String? _validationError() {
-    final base =
-        Validators.requiredText(_nameController.text, field: 'Name') ??
-        Validators.requiredText(_emailController.text, field: 'E-Mail') ??
-        Validators.email(_emailController.text);
-    if (base != null) return base;
-
-    // A password change is all-or-nothing: as soon as any field is touched,
-    // all three are required and must be consistent.
-    final touchedPassword =
-        _currentPasswordController.text.isNotEmpty ||
-        _newPasswordController.text.isNotEmpty ||
-        _confirmPasswordController.text.isNotEmpty;
-    if (touchedPassword) {
-      final passwordError =
-          Validators.requiredText(
-            _currentPasswordController.text,
-            field: 'Aktuelles Passwort',
-          ) ??
-          Validators.requiredText(
-            _newPasswordController.text,
-            field: 'Neues Passwort',
-          ) ??
-          Validators.requiredText(
-            _confirmPasswordController.text,
-            field: 'Bestätigung',
-          ) ??
-          Validators.match(
-            _newPasswordController.text,
-            _confirmPasswordController.text,
-            message: 'Neue Passwörter stimmen nicht überein',
-          ) ??
-          Validators.passwordStrength(
-            _newPasswordController.text,
-            message: 'Neues Passwort ist zu schwach',
-          );
-      if (passwordError != null) return passwordError;
-
-      // Business check needs the stored hash, so it stays here.
-      if (!PasswordHasher.verifyPassword(
-        _currentPasswordController.text,
-        UserService().currentUser.passwordHash,
-      )) {
-        return 'Aktuelles Passwort ist falsch';
-      }
-    }
-    return null;
+    _nameController = TextEditingController(
+      text: AuthService.instance.displayName ?? '',
+    );
+    _emailController = TextEditingController(
+      text: AuthService.instance.email ?? '',
+    );
+    _nameController.addListener(_onChanged);
+    _currentPassword.addListener(_onChanged);
+    _newPassword.addListener(_onChanged);
+    _confirmPassword.addListener(_onChanged);
   }
 
   @override
   void dispose() {
-    _nameController.removeListener(_onFieldChanged);
-    _emailController.removeListener(_onFieldChanged);
-    _currentPasswordController.removeListener(_onFieldChanged);
-    _newPasswordController.removeListener(_onFieldChanged);
-    _confirmPasswordController.removeListener(_onFieldChanged);
     _nameController.dispose();
     _emailController.dispose();
-    _currentPasswordController.dispose();
-    _newPasswordController.dispose();
-    _confirmPasswordController.dispose();
+    _currentPassword.dispose();
+    _newPassword.dispose();
+    _confirmPassword.dispose();
     super.dispose();
   }
 
-  void _handleSave() async {
+  void _onChanged() => setState(() {});
+
+  /// Coarse gate for the button: only the required name. The rest is checked
+  /// on tap and reported via SnackBar.
+  bool get _canSave => _nameController.text.trim().isNotEmpty;
+
+  String? _validationError() {
+    final nameError = Validators.requiredText(_nameController.text, field: 'Name');
+    if (nameError != null) return nameError;
+
+    final touchedPassword =
+        _currentPassword.text.isNotEmpty ||
+        _newPassword.text.isNotEmpty ||
+        _confirmPassword.text.isNotEmpty;
+    if (touchedPassword) {
+      return Validators.requiredText(
+            _currentPassword.text,
+            field: 'Aktuelles Passwort',
+          ) ??
+          Validators.requiredText(_newPassword.text, field: 'Neues Passwort') ??
+          Validators.requiredText(
+            _confirmPassword.text,
+            field: 'Bestätigung',
+          ) ??
+          Validators.match(
+            _newPassword.text,
+            _confirmPassword.text,
+            message: 'Neue Passwörter stimmen nicht überein',
+          ) ??
+          Validators.passwordStrength(
+            _newPassword.text,
+            message: 'Neues Passwort ist zu schwach',
+          );
+    }
+    return null;
+  }
+
+  Future<void> _handleSave() async {
     final error = _validationError();
     if (error != null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(error)));
+      _snack(error);
       return;
     }
 
-    final currentProfile = UserService().currentUser;
-    final newPasswordHash = _newPasswordController.text.isNotEmpty
-        ? PasswordHasher.hashPassword(_newPasswordController.text)
-        : currentProfile.passwordHash;
-
     setState(() => _isLoading = true);
-    await Future.delayed(const Duration(milliseconds: 800));
-    setState(() => _isLoading = false);
+    try {
+      final auth = AuthService.instance;
+      if (_nameController.text.trim() != (auth.displayName ?? '')) {
+        await auth.updateDisplayName(_nameController.text);
+      }
+      if (_newPassword.text.isNotEmpty) {
+        await auth.changePassword(
+          currentPassword: _currentPassword.text,
+          newPassword: _newPassword.text,
+        );
+      }
+      _currentPassword.clear();
+      _newPassword.clear();
+      _confirmPassword.clear();
+      if (!mounted) return;
+      _snack('Profil gespeichert');
+      setState(() {}); // refresh avatar / name
+    } on AuthException catch (e) {
+      _snack(e.message);
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
 
-    if (!mounted) return;
+  Future<void> _logout() async {
+    await AuthService.instance.logout();
+    if (mounted) Navigator.of(context).pop(); // leave the profile screen
+  }
 
-    final updatedProfile = currentProfile.copyWith(
-      name: _nameController.text,
-      email: _emailController.text,
-      passwordHash: newPasswordHash,
-    );
-
-    final repository = ProfileRepository();
-    repository.updateProfile(updatedProfile);
-    UserService().updateProfile(updatedProfile);
-
-    _currentPasswordController.clear();
-    _newPasswordController.clear();
-    _confirmPasswordController.clear();
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Profil erfolgreich gespeichert')),
-    );
+  void _snack(String message) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
   Widget build(BuildContext context) {
-    final profile = UserService().currentUser;
+    final auth = AuthService.instance;
     return Scaffold(
-      appBar: AppBar(title: const Text('Profil')),
+      appBar: AppBar(
+        title: const Text('Profil'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            tooltip: 'Abmelden',
+            onPressed: _logout,
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(24),
@@ -170,7 +158,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   radius: 60,
                   backgroundColor: AppColors.primary,
                   child: Text(
-                    profile.avatarInitial,
+                    auth.avatarInitial,
                     style: const TextStyle(
                       fontSize: 48,
                       fontWeight: FontWeight.bold,
@@ -182,36 +170,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(height: 32),
               Text('Name', style: Theme.of(context).textTheme.labelLarge),
               const SizedBox(height: 8),
-              TextField(
-                controller: _nameController,
-                decoration: InputDecoration(
-                  hintText: 'Max Mustermann',
-                  hintStyle: TextStyle(color: AppColors.bg600),
-                  filled: true,
-                  fillColor: AppColors.bg500,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(AppRadii.rounded),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
+              _field(_nameController),
               const SizedBox(height: 24),
               Text('E-Mail', style: Theme.of(context).textTheme.labelLarge),
               const SizedBox(height: 8),
-              TextField(
-                controller: _emailController,
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  hintText: 'max@mustermann.nexus',
-                  hintStyle: TextStyle(color: AppColors.bg600),
-                  filled: true,
-                  fillColor: AppColors.bg500,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(AppRadii.rounded),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
+              _field(_emailController, enabled: false),
               const SizedBox(height: 32),
               Text(
                 'Passwortänderung',
@@ -225,30 +188,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 style: Theme.of(context).textTheme.labelLarge,
               ),
               const SizedBox(height: 8),
-              TextField(
-                controller: _currentPasswordController,
-                obscureText: !_showCurrentPassword,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: AppColors.bg500,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(AppRadii.rounded),
-                    borderSide: BorderSide.none,
-                  ),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _showCurrentPassword
-                          ? Icons.visibility
-                          : Icons.visibility_off,
-                      color: Colors.grey[600],
-                    ),
-                    onPressed: () {
-                      setState(
-                        () => _showCurrentPassword = !_showCurrentPassword,
-                      );
-                    },
-                  ),
-                ),
+              _passwordField(
+                _currentPassword,
+                _showCurrent,
+                () => setState(() => _showCurrent = !_showCurrent),
               ),
               const SizedBox(height: 24),
               Text(
@@ -256,28 +199,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 style: Theme.of(context).textTheme.labelLarge,
               ),
               const SizedBox(height: 8),
-              TextField(
-                controller: _newPasswordController,
-                obscureText: !_showNewPassword,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: AppColors.bg500,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(AppRadii.rounded),
-                    borderSide: BorderSide.none,
-                  ),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _showNewPassword
-                          ? Icons.visibility
-                          : Icons.visibility_off,
-                      color: Colors.grey[600],
-                    ),
-                    onPressed: () {
-                      setState(() => _showNewPassword = !_showNewPassword);
-                    },
-                  ),
-                ),
+              _passwordField(
+                _newPassword,
+                _showNew,
+                () => setState(() => _showNew = !_showNew),
               ),
               const SizedBox(height: 24),
               Text(
@@ -285,68 +210,70 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 style: Theme.of(context).textTheme.labelLarge,
               ),
               const SizedBox(height: 8),
-              TextField(
-                controller: _confirmPasswordController,
-                obscureText: !_showConfirmPassword,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: AppColors.bg500,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(AppRadii.rounded),
-                    borderSide: BorderSide.none,
-                  ),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _showConfirmPassword
-                          ? Icons.visibility
-                          : Icons.visibility_off,
-                      color: Colors.grey[600],
-                    ),
-                    onPressed: () {
-                      setState(
-                        () => _showConfirmPassword = !_showConfirmPassword,
-                      );
-                    },
-                  ),
-                ),
+              _passwordField(
+                _confirmPassword,
+                _showConfirm,
+                () => setState(() => _showConfirm = !_showConfirm),
               ),
               const SizedBox(height: 40),
               SizedBox(
                 width: double.infinity,
                 height: 50,
-                child: ElevatedButton(
+                child: FilledButton(
                   onPressed: (_isLoading || !_canSave) ? null : _handleSave,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    disabledBackgroundColor: Colors.grey[400],
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppRadii.rounded),
-                    ),
-                  ),
                   child: _isLoading
                       ? const SizedBox(
                           height: 20,
                           width: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              AppColors.bg200,
-                            ),
-                          ),
+                          child: CircularProgressIndicator(strokeWidth: 2),
                         )
-                      : const Text(
-                          'Speichern',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.bg200,
-                          ),
-                        ),
+                      : const Text('Speichern'),
                 ),
               ),
               const SizedBox(height: 24),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _field(TextEditingController controller, {bool enabled = true}) {
+    return TextField(
+      controller: controller,
+      enabled: enabled,
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: AppColors.bg500,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppRadii.rounded),
+          borderSide: BorderSide.none,
+        ),
+      ),
+    );
+  }
+
+  Widget _passwordField(
+    TextEditingController controller,
+    bool visible,
+    VoidCallback onToggle,
+  ) {
+    return TextField(
+      controller: controller,
+      obscureText: !visible,
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: AppColors.bg500,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppRadii.rounded),
+          borderSide: BorderSide.none,
+        ),
+        suffixIcon: IconButton(
+          icon: Icon(
+            visible ? Icons.visibility : Icons.visibility_off,
+            color: AppColors.bg600,
+          ),
+          onPressed: onToggle,
         ),
       ),
     );

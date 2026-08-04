@@ -1,4 +1,4 @@
-import 'package:filament_nexus/app/services/user_service.dart';
+import 'package:filament_nexus/app/services/auth_service.dart';
 import 'package:filament_nexus/features/filaments/data/filament_repository.dart';
 import 'package:filament_nexus/features/filaments/presentation/add_edit_filament_screen.dart';
 import 'package:filament_nexus/features/filaments/domain/filament.dart';
@@ -21,7 +21,7 @@ class _MyFilamentsScreenState extends State<MyFilamentsScreen> {
   final FilamentRepository _repository = FilamentRepository.instance;
 
   List<String> get _materialOptions {
-    final userId = UserService().userId;
+    final userId = AuthService.instance.uid;
     final options = _repository.filaments
         .where((filament) => filament.userId == userId)
         .map((filament) => filament.type.name)
@@ -31,7 +31,7 @@ class _MyFilamentsScreenState extends State<MyFilamentsScreen> {
   }
 
   List<FilamentPropertyOption> get _propertyOptions {
-    final userId = UserService().userId;
+    final userId = AuthService.instance.uid;
     return allPropertyOptions
         .where(
           (option) => _repository.filaments
@@ -43,7 +43,7 @@ class _MyFilamentsScreenState extends State<MyFilamentsScreen> {
 
   List<Filament> get _filteredFilaments {
     return _repository.filaments
-        .where((filament) => filament.userId == UserService().userId)
+        .where((filament) => filament.userId == AuthService.instance.uid)
         .where((filament) {
           if (!matchesQuery(filament, _query)) {
             return false;
@@ -85,6 +85,11 @@ class _MyFilamentsScreenState extends State<MyFilamentsScreen> {
             Expanded(
               child: FilamentList(
                 filaments: _filteredFilaments,
+                isLoading: _repository.isLoading,
+                error: _repository.loadError,
+                emptyMessage:
+                    'Du hast noch keine eigenen Filamente erfasst.\n'
+                    'Lege mit + ein neues an.',
                 // Tapping a filament opens it for editing.
                 onTap: (filament) => Navigator.of(context).push(
                   MaterialPageRoute(

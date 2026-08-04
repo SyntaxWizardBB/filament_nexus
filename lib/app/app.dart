@@ -1,4 +1,4 @@
-import 'package:filament_nexus/app/navigation_screen.dart';
+import 'package:filament_nexus/app/auth_gate.dart';
 import 'package:flutter/material.dart';
 import 'theme/app_theme.dart';
 
@@ -11,7 +11,7 @@ class FilamentNexus extends StatelessWidget {
       title: 'Filament Nexus',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
-      home: const NavigationScreen(),
+      home: const AuthGate(),
     );
   }
 }
