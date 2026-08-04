@@ -12,13 +12,19 @@ class LocalFilamentDataSource implements FilamentDataSource {
   Future<List<Filament>> fetchAll() async => List.unmodifiable(_store);
 
   @override
-  Future<void> save(Filament filament) async {
-    final index = _store.indexWhere((f) => f.id == filament.id);
+  Future<Filament> save(Filament filament) async {
+    // Mirrors the Firestore behaviour: no id yet → assign one on create.
+    final stored = filament.id.isEmpty
+        ? filament.withId('f-${DateTime.now().millisecondsSinceEpoch}')
+        : filament;
+
+    final index = _store.indexWhere((f) => f.id == stored.id);
     if (index >= 0) {
-      _store[index] = filament;
+      _store[index] = stored;
     } else {
-      _store.add(filament);
+      _store.add(stored);
     }
+    return stored;
   }
 
   @override

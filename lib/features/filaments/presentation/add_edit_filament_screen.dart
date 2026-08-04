@@ -90,8 +90,8 @@ class _AddEditFilamentScreenState extends State<AddEditFilamentScreen> {
       ).showSnackBar(SnackBar(content: Text(error)));
       return;
     }
-    final id =
-        widget.filament?.id ?? 'f-${DateTime.now().millisecondsSinceEpoch}';
+    // Empty id on create — the data source assigns the document id.
+    final id = widget.filament?.id ?? '';
     await FilamentRepository.instance.save(_form.toFilament(id: id));
     if (mounted) Navigator.of(context).pop();
   }

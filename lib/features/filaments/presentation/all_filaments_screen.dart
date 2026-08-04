@@ -78,6 +78,9 @@ class _AllFilamentsScreenState extends State<AllFilamentsScreen> {
             Expanded(
               child: FilamentList(
                 filaments: _filteredFilaments,
+                isLoading: _repository.isLoading,
+                error: _repository.loadError,
+                emptyMessage: 'Keine Filamente gefunden.',
                 onTap: (filament) => _openDetails(context, filament),
               ),
             ),

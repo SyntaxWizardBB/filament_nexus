@@ -20,8 +20,18 @@ class FirebaseFilamentDataSource implements FilamentDataSource {
   }
 
   @override
-  Future<void> save(Filament filament) async {
-    await _db.collection(_collection).doc(filament.id).set(filament.toJson());
+  Future<Filament> save(Filament filament) async {
+    final collection = _db.collection(_collection);
+
+    // No id yet → create with add(); Firestore generates the document id.
+    if (filament.id.isEmpty) {
+      final docRef = await collection.add(filament.toJson());
+      return filament.withId(docRef.id);
+    }
+
+    // Existing id → update that very document.
+    await collection.doc(filament.id).update(filament.toJson());
+    return filament;
   }
 
   @override

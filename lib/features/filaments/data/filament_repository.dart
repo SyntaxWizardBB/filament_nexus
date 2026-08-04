@@ -30,28 +30,49 @@ class FilamentRepository extends ChangeNotifier {
 
   final FilamentDataSource _dataSource;
   List<Filament> _filaments = const [];
+  bool _isLoading = true;
+  String? _loadError;
 
   List<Filament> get filaments => List.unmodifiable(_filaments);
+
+  /// True while the initial fetch is running — screens show a spinner.
+  bool get isLoading => _isLoading;
+
+  /// Set when the initial fetch failed (e.g. missing permissions).
+  String? get loadError => _loadError;
 
   /// Fetches all filaments from the data source and rebuilds subscribers.
   /// Call once at app startup; re-call after switching data sources.
   Future<void> load() async {
-    _filaments = await _dataSource.fetchAll();
+    _isLoading = true;
+    _loadError = null;
     notifyListeners();
+    try {
+      _filaments = await _dataSource.fetchAll();
+    } catch (e) {
+      _loadError = 'Filamente konnten nicht geladen werden.';
+      _filaments = const [];
+      debugPrint('Loading filaments failed: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 
-  /// Adds a new filament or replaces an existing one with the same id.
-  Future<void> save(Filament filament) async {
-    await _dataSource.save(filament);
+  /// Adds a new filament (empty id) or replaces an existing one.
+  /// Returns the stored filament, which carries the final id after a create.
+  Future<Filament> save(Filament filament) async {
+    final stored = await _dataSource.save(filament);
     final updated = List.of(_filaments);
-    final index = updated.indexWhere((f) => f.id == filament.id);
+    final index = updated.indexWhere((f) => f.id == stored.id);
     if (index >= 0) {
-      updated[index] = filament;
+      updated[index] = stored;
     } else {
-      updated.add(filament);
+      updated.add(stored);
     }
     _filaments = updated;
     notifyListeners();
+    return stored;
   }
 
   /// Removes the filament with the given [id]. No-op if not found.

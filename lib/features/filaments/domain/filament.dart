@@ -40,6 +40,27 @@ class Filament {
     this.description = '',
   });
 
+  /// Returns a copy carrying [newId] — used after a create, when the data
+  /// source has assigned the final document id.
+  Filament withId(String newId) => Filament(
+    id: newId,
+    userId: userId,
+    type: type,
+    vendor: vendor,
+    name: name,
+    description: description,
+    printTempMin: printTempMin,
+    printTempMax: printTempMax,
+    bedTempMin: bedTempMin,
+    bedTempMax: bedTempMax,
+    printSpeedMin: printSpeedMin,
+    printSpeedMax: printSpeedMax,
+    fanSpeedFirstLayer: fanSpeedFirstLayer,
+    fanSpeed: fanSpeed,
+    details: details,
+    ratings: ratings,
+  );
+
   /// Serializes to a Firestore document map. [id] is stored as the document id,
   /// so it is intentionally not part of the map.
   Map<String, dynamic> toJson() => {
