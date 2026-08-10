@@ -96,6 +96,31 @@ class _AuthScreenState extends State<AuthScreen> {
     setState(() => _isRegister = !_isRegister);
   }
 
+  /// Sends a reset link to the address currently typed in the e-mail field.
+  Future<void> _resetPassword() async {
+    final error =
+        Validators.requiredText(_email.text, field: 'E-Mail') ??
+        Validators.email(_email.text);
+    if (error != null) {
+      _showError('$error — bitte zuerst deine E-Mail eintragen.');
+      return;
+    }
+
+    setState(() => _isLoading = true);
+    try {
+      await AuthService.instance.sendPasswordResetEmail(_email.text);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Link zum Zurücksetzen gesendet.')),
+        );
+      }
+    } on AuthException catch (e) {
+      _showError(e.message);
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -175,6 +200,11 @@ class _AuthScreenState extends State<AuthScreen> {
                         : 'Noch kein Konto? Registrieren',
                   ),
                 ),
+                if (!_isRegister)
+                  TextButton(
+                    onPressed: _isLoading ? null : _resetPassword,
+                    child: const Text('Passwort vergessen?'),
+                  ),
               ],
             ),
           ),

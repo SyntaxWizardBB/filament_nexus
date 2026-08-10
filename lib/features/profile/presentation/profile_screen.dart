@@ -38,6 +38,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       text: AuthService.instance.email ?? '',
     );
     _nameController.addListener(_onChanged);
+    _emailController.addListener(_onChanged);
     _currentPassword.addListener(_onChanged);
     _newPassword.addListener(_onChanged);
     _confirmPassword.addListener(_onChanged);
@@ -55,19 +56,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void _onChanged() => setState(() {});
 
-  /// Coarse gate for the button: only the required name. The rest is checked
-  /// on tap and reported via SnackBar.
-  bool get _canSave => _nameController.text.trim().isNotEmpty;
+  /// Coarse gate for the button: only the required base fields. The rest is
+  /// checked on tap and reported via SnackBar.
+  bool get _canSave =>
+      _nameController.text.trim().isNotEmpty &&
+      _emailController.text.trim().isNotEmpty;
+
+  /// True when the user typed a different e-mail than the current login one.
+  bool get _emailChanged =>
+      _emailController.text.trim() != (AuthService.instance.email ?? '');
 
   String? _validationError() {
-    final nameError = Validators.requiredText(_nameController.text, field: 'Name');
-    if (nameError != null) return nameError;
+    final base =
+        Validators.requiredText(_nameController.text, field: 'Name') ??
+        Validators.requiredText(_emailController.text, field: 'E-Mail') ??
+        Validators.email(_emailController.text);
+    if (base != null) return base;
 
-    final touchedPassword =
-        _currentPassword.text.isNotEmpty ||
-        _newPassword.text.isNotEmpty ||
-        _confirmPassword.text.isNotEmpty;
-    if (touchedPassword) {
+    // Changing the login address requires confirming the current password.
+    if (_emailChanged && _currentPassword.text.isEmpty) {
+      return 'Für die E-Mail-Änderung bitte das aktuelle Passwort eingeben.';
+    }
+
+    // A password change is triggered by the "new password" fields — the
+    // current-password field alone may just be there for the e-mail change.
+    final changingPassword =
+        _newPassword.text.isNotEmpty || _confirmPassword.text.isNotEmpty;
+    if (changingPassword) {
       return Validators.requiredText(
             _currentPassword.text,
             field: 'Aktuelles Passwort',
@@ -100,8 +115,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() => _isLoading = true);
     try {
       final auth = AuthService.instance;
+      final emailPending = _emailChanged;
+
       if (_nameController.text.trim() != (auth.displayName ?? '')) {
         await auth.updateDisplayName(_nameController.text);
+      }
+      // E-mail first: it reauthenticates with the *current* password, which a
+      // password change would already have replaced.
+      if (emailPending) {
+        await auth.changeEmail(
+          currentPassword: _currentPassword.text,
+          newEmail: _emailController.text,
+        );
       }
       if (_newPassword.text.isNotEmpty) {
         await auth.changePassword(
@@ -113,7 +138,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       _newPassword.clear();
       _confirmPassword.clear();
       if (!mounted) return;
-      _snack('Profil gespeichert');
+      _snack(
+        emailPending
+            ? 'Gespeichert. Bestätige den Link an die neue E-Mail-Adresse — '
+                  'bis dahin gilt die bisherige.'
+            : 'Profil gespeichert',
+      );
       setState(() {}); // refresh avatar / name
     } on AuthException catch (e) {
       _snack(e.message);
@@ -174,7 +204,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(height: 24),
               Text('E-Mail', style: Theme.of(context).textTheme.labelLarge),
               const SizedBox(height: 8),
-              _field(_emailController, enabled: false),
+              _field(_emailController),
+              const SizedBox(height: 6),
+              Padding(
+                padding: const EdgeInsets.only(left: 12),
+                child: Text(
+                  'Deine Anmeldekennung. Bei einer Änderung senden wir einen '
+                  'Bestätigungslink an die neue Adresse; dafür ist dein '
+                  'aktuelles Passwort nötig.',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(color: AppColors.textLight),
+                ),
+              ),
               const SizedBox(height: 32),
               Text(
                 'Passwortänderung',
