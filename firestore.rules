@@ -2,17 +2,30 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    function verificationRequired() {
+      return false;
+    }
+    // ─────────────────────────────────────────────────────────────────────
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function emailOk() {
+      return !verificationRequired()
+             || request.auth.token.email_verified == true;
+    }
+
     // Filament catalog:
     //  - any signed-in user may read ("Alle Filamente")
-    //  - writing additionally requires a confirmed e-mail address
     //  - create/update/delete only by the owner (userId == their uid)
     match /filaments/{filamentId} {
-      allow read: if request.auth != null;
-      allow create: if request.auth != null
-                    && request.auth.token.email_verified == true
+      allow read: if isSignedIn();
+      allow create: if isSignedIn()
+                    && emailOk()
                     && request.resource.data.userId == request.auth.uid;
-      allow update, delete: if request.auth != null
-                    && request.auth.token.email_verified == true
+      allow update, delete: if isSignedIn()
+                    && emailOk()
                     && resource.data.userId == request.auth.uid;
     }
 

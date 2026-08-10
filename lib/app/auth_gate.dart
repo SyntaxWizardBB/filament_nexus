@@ -1,3 +1,4 @@
+import 'package:filament_nexus/app/config/app_config.dart';
 import 'package:filament_nexus/app/navigation_screen.dart';
 import 'package:filament_nexus/app/services/auth_service.dart';
 import 'package:filament_nexus/features/auth/presentation/auth_screen.dart';
@@ -35,7 +36,7 @@ class _AuthGateState extends State<AuthGate> {
 
         // Read the live user: reload() updates it without a stream event.
         final auth = AuthService.instance;
-        if (!auth.isEmailVerified) {
+        if (AppConfig.requireEmailVerification && !auth.isEmailVerified) {
           return VerifyEmailScreen(onVerified: () => setState(() {}));
         }
         return const NavigationScreen();
