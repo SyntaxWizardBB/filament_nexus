@@ -23,122 +23,127 @@ class FilamentDetailModal extends StatelessWidget {
       child: SafeArea(
         top: false,
         child: Container(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
           decoration: const BoxDecoration(
             color: AppColors.bg500,
             borderRadius: BorderRadius.all(Radius.circular(AppRadii.card)),
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Align(
-                alignment: Alignment.centerRight,
-                child: IconButton(
-                  visualDensity: VisualDensity.compact,
-                  icon: const Icon(Icons.close),
-                  onPressed: () => Navigator.pop(context),
+          clipBehavior: Clip.antiAlias,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: IconButton(
+                    visualDensity: VisualDensity.compact,
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.pop(context),
+                  ),
                 ),
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  _FilamentIcon(color: filament.ratings.level.color),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '${filament.type.name.toUpperCase()}  ${filament.vendor.name}',
-                          style: theme.textTheme.labelSmall?.copyWith(
-                            color: AppColors.textLight,
-                            letterSpacing: 0.6,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    _FilamentIcon(color: filament.ratings.level.color),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${filament.type.name.toUpperCase()}  ${filament.vendor.name}',
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: AppColors.textLight,
+                              letterSpacing: 0.6,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          filament.name,
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
+                          const SizedBox(height: 2),
+                          Text(
+                            filament.name,
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 6),
-                        Wrap(
-                          spacing: 12,
-                          runSpacing: 6,
-                          children: [
-                            _SpecRow(
-                              icon: Icons.local_fire_department,
-                              text: _rangeText(
-                                filament.printTempMin,
-                                filament.printTempMax,
-                                unit: 'C',
+                          const SizedBox(height: 6),
+                          Wrap(
+                            spacing: 12,
+                            runSpacing: 6,
+                            children: [
+                              _SpecRow(
+                                icon: Icons.local_fire_department,
+                                text: _rangeText(
+                                  filament.printTempMin,
+                                  filament.printTempMax,
+                                  unit: 'C',
+                                ),
                               ),
-                            ),
-                            _SpecRow(
-                              icon: Icons.grid_on,
-                              text: _rangeText(
-                                filament.bedTempMin,
-                                filament.bedTempMax,
-                                unit: 'C',
+                              _SpecRow(
+                                icon: Icons.grid_on,
+                                text: _rangeText(
+                                  filament.bedTempMin,
+                                  filament.bedTempMax,
+                                  unit: 'C',
+                                ),
                               ),
-                            ),
-                            _SpecRow(
-                              icon: Icons.speed,
-                              text: _rangeText(
-                                filament.printSpeedMin,
-                                filament.printSpeedMax,
-                                unit: 'mm/s',
+                              _SpecRow(
+                                icon: Icons.speed,
+                                text: _rangeText(
+                                  filament.printSpeedMin,
+                                  filament.printSpeedMax,
+                                  unit: 'mm/s',
+                                ),
                               ),
-                            ),
-                            _SpecRow(
-                              icon: Icons.air,
-                              text: _fanText(
-                                filament.fanSpeedFirstLayer,
-                                filament.fanSpeed,
+                              _SpecRow(
+                                icon: Icons.air,
+                                text: _fanText(
+                                  filament.fanSpeedFirstLayer,
+                                  filament.fanSpeed,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              const _SectionDivider(),
-              if (tags.isEmpty)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.bg200,
-                    borderRadius: BorderRadius.circular(AppRadii.rounded),
-                  ),
-                  child: Text(
-                    'Keine speziellen Eigenschaften',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: AppColors.textLight,
+                  ],
+                ),
+                const _SectionDivider(),
+                if (tags.isEmpty)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 8,
                     ),
+                    decoration: BoxDecoration(
+                      color: AppColors.bg200,
+                      borderRadius: BorderRadius.circular(AppRadii.rounded),
+                    ),
+                    child: Text(
+                      'Keine speziellen Eigenschaften',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: AppColors.textLight,
+                      ),
+                    ),
+                  )
+                else
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      for (final tag in tags) _PropertyTag(label: tag),
+                    ],
                   ),
-                )
-              else
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [for (final tag in tags) _PropertyTag(label: tag)],
-                ),
-              const _SectionDivider(),
-              for (final kind in FilamentRatingKind.values)
-                FilamentRating(
-                  name: kind.label,
-                  rating: kind.read(filament.ratings),
-                  lowLabel: kind.lowLabel,
-                  highLabel: kind.highLabel,
-                ),
-            ],
+                const _SectionDivider(),
+                for (final kind in FilamentRatingKind.values)
+                  FilamentRating(
+                    name: kind.label,
+                    rating: kind.read(filament.ratings),
+                    lowLabel: kind.lowLabel,
+                    highLabel: kind.highLabel,
+                  ),
+              ],
+            ),
           ),
         ),
       ),
