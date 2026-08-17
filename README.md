@@ -128,10 +128,10 @@ Im Drawer (Burgermenü oben links) der App befindet sich eine Infoseite, eine Wi
 
 ## Welche Daten werde in Firebase gespeichert?
 - Userdaten in der integrierten Firebase Authentifizierung. Nicht als implementiertes eigenes Schema.
-- Filamente mit den Eigenschaften gemäss: [lib\features\filaments\domain\filament.dart](https://github.com/SyntaxWizardBB/filament_nexus/blob/f249859b9f23f7cea2e1e7c6ab64e59f97e24c5a/lib/features/filaments/domain/filament.dart)
+- Filamente mit den Eigenschaften gemäss: [lib\features\filaments\domain\filament.dart](https://github.com/SyntaxWizardBB/filament_nexus/blob/main/lib/features/filaments/domain/filament.dart)
 
 ## Wo sind die CRUD operationen umgesetzt?
-CURD operationen sind hier umgesetzt: [lib\features\filaments\data\firebase_filament_data_source.dart](https://github.com/SyntaxWizardBB/filament_nexus/blob/f249859b9f23f7cea2e1e7c6ab64e59f97e24c5a/lib/features/filaments/data/firebase_filament_data_source.dart)
+CURD operationen sind hier umgesetzt: [lib\features\filaments\data\firebase_filament_data_source.dart](https://github.com/SyntaxWizardBB/filament_nexus/blob/main/lib/features/filaments/data/firebase_filament_data_source.dart)
 
 ## Was wurde gegenüber Teil 1 weiterentwickelt?
 - Die App ist nun mit Firebase verbunden und kann Daten speichern und abrufen.
