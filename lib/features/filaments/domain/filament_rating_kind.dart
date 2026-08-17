@@ -4,9 +4,9 @@ import 'package:filament_nexus/features/filaments/domain/filament_rating.dart';
 /// the meaning of the low (0) and high (10) ends of the scale.
 enum FilamentRatingKind {
   workability('Verarbeitbarkeit allgemein', 'schwierig', 'einfach'),
-  warping('Warping (Lösen vom Druckbett)', 'klebbt fest', 'löst sich sauber'),
-  stringing('Stringing (Zieht Fäden)', 'viel Fäden', 'keine Fäden'),
-  shrinking('Shrinking (Schrumpfen beim Abkühlen)', 'schrumpft stark', 'kein Schrumpfen'),
+  warping('Warping (Lösen vom Druckbett)', 'viel', 'wenig'),
+  stringing('Stringing (Zieht Fäden)', 'viel', 'wenig'),
+  shrinking('Shrinking (Schrumpfen beim Abkühlen)', 'viel', 'wenig'),
   draftSensitivity('Empfindlichkeit bei Luftzug', 'empfindlich', 'unempfindlich');
 
   final String label;

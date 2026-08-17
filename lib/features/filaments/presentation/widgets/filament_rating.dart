@@ -3,18 +3,38 @@ import 'package:filament_nexus/app/theme/app_radii.dart';
 import 'package:flutter/material.dart';
 
 class FilamentRating extends StatelessWidget {
-  const FilamentRating({super.key, required this.name, required this.rating});
+  const FilamentRating({
+    super.key,
+    required this.name,
+    required this.rating,
+    required this.lowLabel,
+    required this.highLabel,
+  });
 
   final String name;
   final int rating;
+  final String lowLabel;
+  final String highLabel;
 
   @override
   Widget build(BuildContext context) {
+    final labelStyle = Theme.of(
+      context,
+    ).textTheme.bodySmall?.copyWith(color: AppColors.textLight);
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(name, style: Theme.of(context).textTheme.bodyMedium),
+        const SizedBox(height: 6),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(lowLabel, style: labelStyle),
+            Text(highLabel, style: labelStyle),
+          ],
+        ),
         const SizedBox(height: 4),
         SizedBox(
           width: double.infinity,

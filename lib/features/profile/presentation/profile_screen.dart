@@ -204,7 +204,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(height: 24),
               Text('E-Mail', style: Theme.of(context).textTheme.labelLarge),
               const SizedBox(height: 8),
-              _field(_emailController),
+              _field(_emailController, enabled: false),
               const SizedBox(height: 6),
               Padding(
                 padding: const EdgeInsets.only(left: 12),

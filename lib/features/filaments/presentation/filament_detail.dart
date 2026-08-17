@@ -2,6 +2,7 @@ import 'package:filament_nexus/app/theme/app_colors.dart';
 import 'package:filament_nexus/app/theme/app_radii.dart';
 import 'package:filament_nexus/features/filaments/domain/filament.dart';
 import 'package:filament_nexus/features/filaments/domain/filament_detail.dart';
+import 'package:filament_nexus/features/filaments/domain/filament_rating_kind.dart';
 import 'package:filament_nexus/features/filaments/domain/filament_rating_level.dart';
 import 'package:filament_nexus/features/filaments/presentation/widgets/filament_rating.dart';
 import 'package:filament_nexus/shared/widgets/filament_icon.dart';
@@ -129,27 +130,14 @@ class FilamentDetailModal extends StatelessWidget {
                   runSpacing: 8,
                   children: [for (final tag in tags) _PropertyTag(label: tag)],
                 ),
-              const _SectionDivider(),            
-              FilamentRating(
-                name: 'Verarbeitbarkeit allgemein',
-                rating: filament.ratings.workability,
-              ),
-              FilamentRating(
-                name: 'Warping (Lösen vom Druckbett)',
-                rating: filament.ratings.warping,
-              ),
-              FilamentRating(
-                name: 'Stringing (Zieht Faden)',
-                rating: filament.ratings.stringing,
-              ),
-              FilamentRating(
-                name: 'Shrinking (Schrumpfen beim Abkühlen)',
-                rating: filament.ratings.shrinking,
-              ),
-              FilamentRating(
-                name: 'Empfindlichkeit bei Luftzug',
-                rating: filament.ratings.draftSensitivity,
-              ),
+              const _SectionDivider(),
+              for (final kind in FilamentRatingKind.values)
+                FilamentRating(
+                  name: kind.label,
+                  rating: kind.read(filament.ratings),
+                  lowLabel: kind.lowLabel,
+                  highLabel: kind.highLabel,
+                ),
             ],
           ),
         ),
