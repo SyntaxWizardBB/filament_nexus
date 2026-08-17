@@ -54,3 +54,7 @@ pubspec.lock
 
 # Android build output
 /android/build/
+
+# Generated files
+**/Flutter/GeneratedPlugin*
+**/flutter/generated_plugin*
