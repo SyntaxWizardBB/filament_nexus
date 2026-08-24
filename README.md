@@ -140,8 +140,11 @@ CURD operationen sind hier umgesetzt: [lib\features\filaments\data\firebase_fila
 - Der Benutzer hat ein Benutzerprofil, welches er bearbeiten kann. (Benutzername, Passwort)
 
 ## Was wäre eine sinnvolle nächste Erweiterung für Teil 3?
+- Wiki erweitern mit mehr Content
+- App Favicon ändern
+- Splashscreen implementieren
+
+## Folgende Erweiterungen wären sinnvoll für eine Produktivsetzung der App:
 - Andere Registrationsmöglichkeiten wie Google, Facebook, Apple, etc. implementieren.
-- Mehr Inhalt für das Wiki erstellen, damit die App mehr Informationen über Filamente bietet.
-- Wiki erweitern mit Bilder
 - PDF Anhänge für Filamente (z.B. Datenblätter) implementieren.
 - Zusätzliche Filtermöglichkeiten für die Filamente implementieren, z.B. nach Hersteller, Max. Drucktemperatur (Aktuell Hersteller als Zusatzfilter mit der Suche möglich)
