@@ -22,7 +22,7 @@ class FilamentCard extends StatelessWidget {
         onTap: onTap,
         child: Ink(
           decoration: BoxDecoration(
-            color: AppColors.bg500,
+            color: AppColors.bg300,
             borderRadius: BorderRadius.circular(AppRadii.card),
           ),
           padding: const EdgeInsets.all(12),
