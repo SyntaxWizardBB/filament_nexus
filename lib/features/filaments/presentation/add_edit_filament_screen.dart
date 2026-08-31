@@ -85,7 +85,11 @@ class _AddEditFilamentScreenState extends State<AddEditFilamentScreen> {
     setState(() => _isBusy = true);
     try {
       await FilamentRepository.instance.delete(widget.filament!.id);
-      if (mounted) Navigator.of(context).pop();
+      if (mounted) {
+        // Clear the lock first so PopScope lets this pop through.
+        _isBusy = false;
+        Navigator.of(context).pop();
+      }
     } on FilamentRepositoryException catch (e) {
       if (mounted) {
         setState(() => _isBusy = false);
@@ -109,7 +113,11 @@ class _AddEditFilamentScreenState extends State<AddEditFilamentScreen> {
       // Empty id on create — the data source assigns the document id.
       final id = widget.filament?.id ?? '';
       await FilamentRepository.instance.save(_form.toFilament(id: id));
-      if (mounted) Navigator.of(context).pop();
+      if (mounted) {
+        // Clear the lock first so PopScope lets this pop through.
+        _isBusy = false;
+        Navigator.of(context).pop();
+      }
     } on FilamentRepositoryException catch (e) {
       if (mounted) {
         setState(() => _isBusy = false);
@@ -126,55 +134,71 @@ class _AddEditFilamentScreenState extends State<AddEditFilamentScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(widget.isEditing ? 'Filament bearbeiten' : 'Neues Filament'),
-        actions: [
-          if (widget.isEditing)
-            IconButton(
-              icon: Icon(
-                Icons.delete_outline,
-                color: Theme.of(context).colorScheme.error,
+    // While a write runs: block back navigation (AppBar back, system back /
+    // swipe) so the user can't leave before it finishes or its error shows.
+    return PopScope(
+      canPop: !_isBusy,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) {
+          _showError('Bitte warten, bis der Vorgang abgeschlossen ist.');
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text(
+            widget.isEditing ? 'Filament bearbeiten' : 'Neues Filament',
+          ),
+          actions: [
+            if (widget.isEditing)
+              IconButton(
+                icon: Icon(
+                  Icons.delete_outline,
+                  color: Theme.of(context).colorScheme.error,
+                ),
+                tooltip: 'Löschen',
+                onPressed: _isBusy ? null : _confirmDelete,
               ),
-              tooltip: 'Löschen',
-              onPressed: _isBusy ? null : _confirmDelete,
-            ),
-        ],
-      ),
-      body: Column(
-        children: [
-          SegmentedTabSelector(
-            labels: _tabLabels,
-            selectedIndex: _tabIndex,
-            onChanged: _goToTab,
+          ],
+        ),
+        // Lock the form (fields + tab switch) while the write is in flight.
+        body: AbsorbPointer(
+          absorbing: _isBusy,
+          child: Column(
+            children: [
+              SegmentedTabSelector(
+                labels: _tabLabels,
+                selectedIndex: _tabIndex,
+                onChanged: _goToTab,
+              ),
+              const Divider(height: 1),
+              Expanded(
+                child: IndexedStack(
+                  index: _tabIndex,
+                  children: [
+                    GeneralTab(
+                      form: _form,
+                      onTypeChanged: (v) => setState(() => _form.type = v),
+                      onVendorChanged: (v) => setState(() => _form.vendor = v),
+                    ),
+                    DetailsTab(
+                      form: _form,
+                      onPropertyChanged: (p, v) =>
+                          setState(() => _form.properties[p] = v),
+                    ),
+                    RatingTab(
+                      form: _form,
+                      onRatingChanged: (r, v) =>
+                          setState(() => _form.ratings[r] = v),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-          const Divider(height: 1),
-          Expanded(
-            child: IndexedStack(
-              index: _tabIndex,
-              children: [
-                GeneralTab(
-                  form: _form,
-                  onTypeChanged: (v) => setState(() => _form.type = v),
-                  onVendorChanged: (v) => setState(() => _form.vendor = v),
-                ),
-                DetailsTab(
-                  form: _form,
-                  onPropertyChanged: (p, v) =>
-                      setState(() => _form.properties[p] = v),
-                ),
-                RatingTab(
-                  form: _form,
-                  onRatingChanged: (r, v) =>
-                      setState(() => _form.ratings[r] = v),
-                ),
-              ],
-            ),
-          ),
-        ],
+        ),
+        bottomNavigationBar: _buildBottomBar(),
       ),
-      bottomNavigationBar: _buildBottomBar(),
     );
   }
 
