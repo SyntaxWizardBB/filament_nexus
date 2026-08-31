@@ -19,12 +19,23 @@ service cloud.firestore {
     // Filament catalog:
     //  - any signed-in user may read ("Alle Filamente")
     //  - create/update/delete only by the owner (userId == their uid)
+    //
+    // userId decides ownership, so no write may change it:
+    //  - create checks the incoming value (request.resource) is the caller
+    //  - update checks the stored value (resource) is the caller AND that the
+    //    incoming value still equals it
+    // update and delete are separate rules because a delete carries no
+    // request.resource -- folding them together would block every delete.
     match /filaments/{filamentId} {
       allow read: if isSignedIn();
       allow create: if isSignedIn()
                     && emailOk()
                     && request.resource.data.userId == request.auth.uid;
-      allow update, delete: if isSignedIn()
+      allow update: if isSignedIn()
+                    && emailOk()
+                    && resource.data.userId == request.auth.uid
+                    && request.resource.data.userId == resource.data.userId;
+      allow delete: if isSignedIn()
                     && emailOk()
                     && resource.data.userId == request.auth.uid;
     }
