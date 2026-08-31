@@ -44,10 +44,10 @@ class FilamentRatings {
 
     final avg = scored.reduce((a, b) => a + b) / scored.length;
 
-    if (avg < 3)return FilamentRatingLevel.bad;
-    if (avg < 5)return FilamentRatingLevel.semiBad;
-    if (avg < 7) return FilamentRatingLevel.medium;
-    if (avg < 9)return FilamentRatingLevel.semiGood;
+    if (avg < 1.5)return FilamentRatingLevel.bad;
+    if (avg < 3.5)return FilamentRatingLevel.semiBad;
+    if (avg < 5.5) return FilamentRatingLevel.medium;
+    if (avg < 7.5)return FilamentRatingLevel.semiGood;
     return FilamentRatingLevel.good;
   }
 }
