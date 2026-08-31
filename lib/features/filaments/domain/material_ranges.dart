@@ -29,11 +29,11 @@ const MaterialRanges kFallbackRanges = MaterialRanges(
 
 const Map<String, MaterialRanges> kMaterialRanges = {
   'PLA': MaterialRanges(nozzle: MaterialRange(160, 240), bed: MaterialRange(0, 70)),
-  'PETG': MaterialRanges(nozzle: MaterialRange(200, 270), bed: MaterialRange(50, 100)),
-  'ABS': MaterialRanges(nozzle: MaterialRange(210, 280), bed: MaterialRange(70, 120)),
+  'PETG': MaterialRanges(nozzle: MaterialRange(200, 270), bed: MaterialRange(0, 120)),
+  'ABS': MaterialRanges(nozzle: MaterialRange(210, 280), bed: MaterialRange(0, 120)),
   'TPU': MaterialRanges(nozzle: MaterialRange(190, 250), bed: MaterialRange(0, 70)),
-  'ASA': MaterialRanges(nozzle: MaterialRange(220, 280), bed: MaterialRange(80, 120)),
-  'PC': MaterialRanges(nozzle: MaterialRange(240, 320), bed: MaterialRange(80, 130)),
+  'ASA': MaterialRanges(nozzle: MaterialRange(220, 280), bed: MaterialRange(0, 120)),
+  'PC': MaterialRanges(nozzle: MaterialRange(240, 320), bed: MaterialRange(0, 130)),
   'PA-CF': MaterialRanges(nozzle: MaterialRange(240, 320), bed: MaterialRange(0, 110)),
 };
 
