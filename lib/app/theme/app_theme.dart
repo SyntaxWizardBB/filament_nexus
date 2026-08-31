@@ -20,7 +20,7 @@ class AppTheme {
       appBarTheme: const AppBarTheme(
         backgroundColor: AppColors.bg500,
         foregroundColor: AppColors.textDark,
-        elevation: 0,
+        scrolledUnderElevation: 0,
         centerTitle: false,
       ),
 
