@@ -12,11 +12,32 @@ class FirebaseFilamentDataSource implements FilamentDataSource {
   static const _collection = 'filaments';
 
   @override
-  Future<List<Filament>> fetchAll() async {
-    final snapshot = await _db.collection(_collection).get();
-    return snapshot.docs
-        .map((doc) => Filament.fromJson(doc.id, doc.data()))
-        .toList();
+  Future<FilamentPage> fetchPage({
+    FilamentPageCursor? cursor,
+    int limit = 20,
+  }) async {
+    // Ordering by the document id needs no composite index and gives a stable,
+    // total order to page through.
+    Query<Map<String, dynamic>> query = _db
+        .collection(_collection)
+        .orderBy(FieldPath.documentId)
+        .limit(limit);
+
+    if (cursor is _SnapshotCursor) {
+      query = query.startAfterDocument(cursor.doc);
+    }
+
+    final snapshot = await query.get();
+    final docs = snapshot.docs;
+
+    return FilamentPage(
+      items: docs
+          .map((doc) => Filament.fromJson(doc.id, doc.data()))
+          .toList(),
+      // A short page means we hit the end — keep the old cursor, it is unused.
+      cursor: docs.isEmpty ? cursor : _SnapshotCursor(docs.last),
+      hasMore: docs.length == limit,
+    );
   }
 
   @override
@@ -38,4 +59,11 @@ class FirebaseFilamentDataSource implements FilamentDataSource {
   Future<void> delete(String id) async {
     await _db.collection(_collection).doc(id).delete();
   }
+}
+
+/// Firestore cursor: wraps the last document of the previous page so the next
+/// query can resume with `startAfterDocument`.
+class _SnapshotCursor implements FilamentPageCursor {
+  final DocumentSnapshot<Map<String, dynamic>> doc;
+  const _SnapshotCursor(this.doc);
 }

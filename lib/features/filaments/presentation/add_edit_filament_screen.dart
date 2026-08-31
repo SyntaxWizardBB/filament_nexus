@@ -1,5 +1,6 @@
 import 'package:filament_nexus/app/theme/app_radii.dart';
 import 'package:filament_nexus/features/filaments/data/filament_repository.dart';
+import 'package:filament_nexus/features/filaments/data/filament_repository_exception.dart';
 import 'package:filament_nexus/features/filaments/domain/filament.dart';
 import 'package:filament_nexus/features/filaments/presentation/add_edit_filament/details_tab.dart';
 import 'package:filament_nexus/features/filaments/presentation/add_edit_filament/filament_form_controller.dart';
@@ -34,6 +35,10 @@ class _AddEditFilamentScreenState extends State<AddEditFilamentScreen> {
   late final FilamentFormController _form;
   int _tabIndex = 0;
 
+  /// True while a save or delete write is in flight — blocks double submits
+  /// and swaps the bottom-bar label for a spinner.
+  bool _isBusy = false;
+
   @override
   void initState() {
     super.initState();
@@ -52,6 +57,7 @@ class _AddEditFilamentScreenState extends State<AddEditFilamentScreen> {
   }
 
   Future<void> _confirmDelete() async {
+    if (_isBusy) return;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -74,26 +80,48 @@ class _AddEditFilamentScreenState extends State<AddEditFilamentScreen> {
         ],
       ),
     );
-    if (confirmed == true && mounted) {
+    if (confirmed != true || !mounted) return;
+
+    setState(() => _isBusy = true);
+    try {
       await FilamentRepository.instance.delete(widget.filament!.id);
       if (mounted) Navigator.of(context).pop();
+    } on FilamentRepositoryException catch (e) {
+      if (mounted) {
+        setState(() => _isBusy = false);
+        _showError(e.message);
+      }
     }
   }
 
   Future<void> _save() async {
+    if (_isBusy) return;
     // All validated fields live on the "Allgemein" tab — jump there on error.
     final error = _form.validationError();
     if (error != null) {
       setState(() => _tabIndex = 0);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(error)));
+      _showError(error);
       return;
     }
-    // Empty id on create — the data source assigns the document id.
-    final id = widget.filament?.id ?? '';
-    await FilamentRepository.instance.save(_form.toFilament(id: id));
-    if (mounted) Navigator.of(context).pop();
+
+    setState(() => _isBusy = true);
+    try {
+      // Empty id on create — the data source assigns the document id.
+      final id = widget.filament?.id ?? '';
+      await FilamentRepository.instance.save(_form.toFilament(id: id));
+      if (mounted) Navigator.of(context).pop();
+    } on FilamentRepositoryException catch (e) {
+      if (mounted) {
+        setState(() => _isBusy = false);
+        _showError(e.message);
+      }
+    }
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -110,7 +138,7 @@ class _AddEditFilamentScreenState extends State<AddEditFilamentScreen> {
                 color: Theme.of(context).colorScheme.error,
               ),
               tooltip: 'Löschen',
-              onPressed: _confirmDelete,
+              onPressed: _isBusy ? null : _confirmDelete,
             ),
         ],
       ),
@@ -158,18 +186,27 @@ class _AddEditFilamentScreenState extends State<AddEditFilamentScreen> {
 
     return _BottomBar(
       label: saveMode ? 'Speichern' : 'Weiter',
-      onPressed: saveMode ? _save : () => _goToTab(_tabIndex + 1),
+      busy: _isBusy,
+      onPressed: _isBusy
+          ? null
+          : (saveMode ? _save : () => _goToTab(_tabIndex + 1)),
     );
   }
 }
 
 /// Bottom action bar with a single full-width button. The label/action is
 /// decided by the screen ("Weiter" to advance vs. "Speichern" to persist).
+/// A null [onPressed] with [busy] set shows a spinner while a write runs.
 class _BottomBar extends StatelessWidget {
   final String label;
-  final VoidCallback onPressed;
+  final bool busy;
+  final VoidCallback? onPressed;
 
-  const _BottomBar({required this.label, required this.onPressed});
+  const _BottomBar({
+    required this.label,
+    required this.onPressed,
+    this.busy = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -185,7 +222,16 @@ class _BottomBar extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppRadii.rounded),
             ),
           ),
-          child: Text(label),
+          child: busy
+              ? const SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.white,
+                  ),
+                )
+              : Text(label),
         ),
       ),
     );

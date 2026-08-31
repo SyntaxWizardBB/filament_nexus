@@ -9,7 +9,25 @@ class LocalFilamentDataSource implements FilamentDataSource {
   final List<Filament> _store = List.of(mockFilaments);
 
   @override
-  Future<List<Filament>> fetchAll() async => List.unmodifiable(_store);
+  Future<FilamentPage> fetchPage({
+    FilamentPageCursor? cursor,
+    int limit = 20,
+  }) async {
+    // Simulate network latency so the paging spinner is actually visible.
+    await Future<void>.delayed(const Duration(milliseconds: 300));
+
+    final start = cursor is _OffsetCursor ? cursor.offset : 0;
+    if (start >= _store.length) {
+      return FilamentPage.empty;
+    }
+
+    final end = (start + limit).clamp(0, _store.length);
+    return FilamentPage(
+      items: List.unmodifiable(_store.sublist(start, end)),
+      cursor: _OffsetCursor(end),
+      hasMore: end < _store.length,
+    );
+  }
 
   @override
   Future<Filament> save(Filament filament) async {
@@ -31,4 +49,10 @@ class LocalFilamentDataSource implements FilamentDataSource {
   Future<void> delete(String id) async {
     _store.removeWhere((f) => f.id == id);
   }
+}
+
+/// In-memory cursor: the index the next page starts at.
+class _OffsetCursor implements FilamentPageCursor {
+  final int offset;
+  const _OffsetCursor(this.offset);
 }
