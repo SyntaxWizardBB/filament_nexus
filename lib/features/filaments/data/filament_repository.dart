@@ -9,8 +9,8 @@ import 'package:flutter/foundation.dart';
 /// Reactive cache in front of a [FilamentDataSource].
 ///
 /// Screens subscribe via [ListenableBuilder] and are rebuilt whenever the
-/// list changes. The backing source (local mock today, Firebase tomorrow) is
-/// swappable without touching any screen.
+/// list changes. The backing source is picked by [AppConfig.useFirebase] and
+/// is swappable without touching any screen.
 ///
 /// ## Paging
 /// Filaments are fetched one page at a time. [load] pulls the first page;

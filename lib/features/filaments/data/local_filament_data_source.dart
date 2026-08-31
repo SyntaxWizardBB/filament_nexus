@@ -4,7 +4,9 @@ import 'package:filament_nexus/features/filaments/domain/filament.dart';
 
 /// In-memory [FilamentDataSource] seeded with mock data.
 ///
-/// Replace with a FirebaseFilamentDataSource (same interface) to go live.
+/// Serves the app while AppConfig.useFirebase is `false` — for demos, tests
+/// and offline work. FirebaseFilamentDataSource implements the same interface
+/// and backs the live app.
 class LocalFilamentDataSource implements FilamentDataSource {
   final List<Filament> _store = List.of(mockFilaments);
 

@@ -29,7 +29,10 @@ class AuthService {
   Stream<User?> authStateChanges() => _auth.authStateChanges();
 
   /// Whether the signed-in user confirmed their e-mail address.
-  /// Writing to Firestore requires this (enforced by the security rules).
+  ///
+  /// Only gates the app while AppConfig.requireEmailVerification is `true`.
+  /// Its server-side counterpart is `verificationRequired()` in
+  /// `firestore.rules`, which then rejects writes from unverified accounts.
   bool get isEmailVerified => _auth.currentUser?.emailVerified ?? false;
 
   /// Sends (or resends) the confirmation e-mail. Firebase delivers it.

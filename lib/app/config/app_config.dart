@@ -2,8 +2,8 @@
 ///
 /// ## Switching the data source
 /// Flip [useFirebase] here to choose the backend — no build flag needed:
-///   * `false` → local mock data (default)
-///   * `true`  → Firestore
+///   * `false` → local mock data
+///   * `true`  → Firestore (the current setting)
 ///
 /// Firebase connection details are NOT needed here — they come from the
 /// generated `firebase_options.dart` and `Firebase.initializeApp` in main.dart.

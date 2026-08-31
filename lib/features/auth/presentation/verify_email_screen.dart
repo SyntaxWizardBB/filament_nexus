@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 
 /// Shown when a user is signed in but has not confirmed their e-mail yet.
 ///
-/// Firestore rules reject writes from unverified accounts, so this screen
-/// gates the app until the confirmation link was clicked.
+/// Only reached while AppConfig.requireEmailVerification is `true`. With the
+/// matching `verificationRequired()` enabled in `firestore.rules`, unverified
+/// accounts are rejected server-side as well, so this screen gates the app
+/// until the confirmation link was clicked.
 class VerifyEmailScreen extends StatefulWidget {
   /// Called once the reload confirmed the address — lets the gate rebuild.
   final VoidCallback onVerified;
