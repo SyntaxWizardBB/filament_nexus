@@ -21,10 +21,6 @@ Aufnehmen tatsächlich geklickt:
   — 29 s, 886 × 1920: App-Preview im Pflichtformat von App Store Connect
   (Apple akzeptiert nur exakt dieses Pixelmass und maximal 30 Sekunden).
 
-Erstellt mit Remotion im Projekt `appstore-video` (liegt neben diesem Repo im
-Workbench-Ordner). Nach sichtbaren App-Änderungen lassen sich die Videos dort
-mit `pnpm capture` und den Render-Befehlen neu erzeugen.
-
 ## Startseite mit Flutter (Grundgerüst)
 
 Die App startet auf der Übersicht mit allen Filamenten. Sie ist ein Stateful Widget, da sich die Liste der Filamente ändern kann, wenn neue hinzugefügt, bestehende bearbeitet oder filter gesetzt werden.
