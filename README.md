@@ -8,6 +8,16 @@ Nach erfolgreicher Beurteilung der Arbeit, wird dieses Readme neu geschrieben um
 Die App wird anhand des im letzten Semester erstellten Prototyps entwickelt. Es handelt sich hierbei um eine App, mit welcher 3D-Druck Filamente und ihre Eigenschaften katalogisiert und verwaltet werden können.
 Die App soll es ermöglichen, Informationen über verschiedene Filamene festzuhalten und zur Verfügung zu stellen. Zusätzlich soll die App Funktionen zur Suche und Filterung der Filamente bieten.
 
+## App-Vorschau
+
+[![Filament Nexus Vorschau](docs/showcase/poster.jpg)](docs/showcase/filament-nexus-extended-1080x1920.mp4)
+
+Unter [docs/showcase](docs/showcase/) liegen drei Produktvideos, die die App im
+Einsatz zeigen — vom Filtern über das Datenblatt bis zum Wiki. Der kurze
+Schnitt (29 s, 886 × 1920) ist als App-Preview für App Store Connect gedacht,
+die längere Fassung (44 s, 1080 × 1920) für Website, Demos und Social Media.
+Details und Herkunft der Videos: [docs/showcase/README.md](docs/showcase/README.md).
+
 ## Startseite mit Flutter (Grundgerüst)
 
 Die App startet auf der Übersicht mit allen Filamenten. Sie ist ein Stateful Widget, da sich die Liste der Filamente ändern kann, wenn neue hinzugefügt, bestehende bearbeitet oder filter gesetzt werden.
