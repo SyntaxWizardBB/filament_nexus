@@ -36,7 +36,7 @@ class _WikiCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (wiki.imagePath != null)
-              _WikiImage(path: wiki.imagePath!, height: 160),
+              SizedBox(height: 160, child: _WikiImage(path: wiki.imagePath!)),
             Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -64,20 +64,26 @@ class _WikiCard extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         title: Text(wiki.title),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              if (wiki.imagePath != null) ...[
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: _WikiImage(path: wiki.imagePath!, height: 180),
-                ),
-                const SizedBox(height: 12),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (wiki.imagePath != null) ...[
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: AspectRatio(
+                      aspectRatio: 16 / 10,
+                      child: _WikiImage(path: wiki.imagePath!),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                ],
+                Text(wiki.description),
               ],
-              Text(wiki.description),
-            ],
+            ),
           ),
         ),
         actions: [
@@ -92,20 +98,16 @@ class _WikiCard extends StatelessWidget {
 }
 
 class _WikiImage extends StatelessWidget {
-  const _WikiImage({required this.path, required this.height});
+  const _WikiImage({required this.path});
 
   final String path;
-  final double height;
 
   @override
   Widget build(BuildContext context) {
     return Image.asset(
       path,
-      height: height,
-      width: double.infinity,
       fit: BoxFit.cover,
       errorBuilder: (context, _, _) => Container(
-        height: height,
         color: Theme.of(context).colorScheme.surfaceContainerHighest,
         alignment: Alignment.center,
         child: Icon(
