@@ -10,16 +10,19 @@ Die App soll es ermöglichen, Informationen über verschiedene Filamene festzuha
 
 ## App-Vorschau
 
-Unter [assets/showcase](assets/showcase/) liegen zwei Produktvideos, die die App
-im Einsatz zeigen — vom Filtern über das Datenblatt bis zum Wiki. Jeder Screen
-darin ist eine echte Aufnahme der App, jeder gezeigte Fingertipp wurde beim
-Aufnehmen tatsächlich geklickt:
+Unter [showcase](showcase/) liegen zwei Produktvideos, die die App im Einsatz
+zeigen — vom Filtern über das Datenblatt bis zum Wiki. Jeder Screen darin ist
+eine echte Aufnahme der App, jeder gezeigte Fingertipp wurde beim Aufnehmen
+tatsächlich geklickt. Beide sind vertont: gesprochene Erklärung mit Musikbett.
 
-- [filament-nexus-extended-1080x1920.mp4](assets/showcase/filament-nexus-extended-1080x1920.mp4)
+- [filament-nexus-extended-1080x1920.mp4](showcase/filament-nexus-extended-1080x1920.mp4)
   — 44 s, Full HD (9:16): das Vorzeigevideo für Website, Demos und Präsentationen.
-- [filament-nexus-appstore-886x1920.mp4](assets/showcase/filament-nexus-appstore-886x1920.mp4)
+- [filament-nexus-appstore-886x1920.mp4](showcase/filament-nexus-appstore-886x1920.mp4)
   — 29 s, 886 × 1920: App-Preview im Pflichtformat von App Store Connect
   (Apple akzeptiert nur exakt dieses Pixelmass und maximal 30 Sekunden).
+
+Erzeugt werden sie im Schwesterprojekt `../appstore-video` (Remotion); dort
+liegen auch Sprechertext und Tonspur.
 
 ## Startseite mit Flutter (Grundgerüst)
 
