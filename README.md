@@ -161,3 +161,11 @@ CURD operationen sind hier umgesetzt: [lib\features\filaments\data\firebase_fila
 - Andere Registrationsmöglichkeiten wie Google, Facebook, Apple, etc. implementieren.
 - PDF Anhänge für Filamente (z.B. Datenblätter) implementieren.
 - Zusätzliche Filtermöglichkeiten für die Filamente implementieren, z.B. nach Hersteller, Max. Drucktemperatur (Aktuell Hersteller als Zusatzfilter mit der Suche möglich)
+
+# Abgabe Teil 3
+Folgende Anpassungen und Erweiterungen wurden zum Teil 2 umgesetzt:
+- Wiki erweitert mit mehr Content
+- Wiki neu mit Bildern
+- Splashscreen implementiert
+- App Favicon geändert
+- Video als App-Preview für den App Store erstellt (siehe [App-Vorschau](#app-vorschau))
